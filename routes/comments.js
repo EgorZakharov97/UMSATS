@@ -18,7 +18,7 @@ router.get("/new", isLoggedIn, function(req, res) {
         if(err){
             console.log(err);
         } else {
-            res.render("comments/new", {item: item});
+            res.render("comments/new", {title: "New comment", item: item});
         }
     })
 });
@@ -59,7 +59,7 @@ router.get("/:comment_id/edit", checkCommentOwnership, function(req, res){
         if(err){
             res.redirect("back");
         } else {
-            res.render("comments/edit", {item_id: req.params.id, comment: comment});
+            res.render("comments/edit", {title: "Edit comment", item_id: req.params.id, comment: comment});
         }
     });
 });

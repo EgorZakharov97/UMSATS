@@ -1,0 +1,14 @@
+<div class="row recordCard">
+    <div class="col-4">
+        <img src="..\..\<%= record.itemInfo.image %>">
+    </div>
+    <div class="col-8">
+        <a href="/items/<%= record.item %>"><strong><%= record.itemInfo.name %></strong></a>
+        <p>
+            Taken: <%= record.dateTaken.toDateString() %>
+            <% if(!record.itemInfo.disposable){ %>
+                Expected: <%= record.dateReturn.toDateString() %>
+            <% } %>
+        </p>
+    </div>
+</div>

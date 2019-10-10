@@ -1,0 +1,21 @@
+<div class="recordCard">
+    <div class="row">
+        <div class="col-4">
+            <img src="../<%= record.itemInfo.image %>">
+            <p>Quantity: <%= record.itemInfo.quantityTaken%></p>
+        </div>
+        <div class="col-8">
+            <a href="/items/<%=record.item.id%>"><strong><%= record.itemInfo.name %></strong></a>
+            <p>ID: <%= record.itemInfo.shortID %></p>
+
+            <button type="button" class="delFromCartBtn" value="<%= record._id%>">Delete</button>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <% if(!record.itemInfo.disposable){ %>
+                    <input type= "date" name="dateReturn[<%= record.itemInfo.shortID %>]" class="dateEachCart">
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+<% include ../partials/header %>
+<% include ../partials/navbar %>
+
+<div class="conteiner-fluid">
+    <div class="row">
+        <div class="col-2 side-bar">
+
+            <!--THIS IS THE SIDEBAR-->
+            <div class="container">
+                <p>Available again</p>
+                <br>
+                <% cameBack.reverse().forEach(function(item){ %>
+                    <% include ../partials/smallItemCard.ejs %>
+                <% }); %>
+            </div>
+
+
+
+        </div>
+        <div class="col-8">
+
+
+            <!--This is the main part-->
+            <% if(ADMIN){ %>
+                <div class="border shadow-sm mb-3 bg-white rounded m-3">
+                    <a href="main/newAnnouncement" class="text-left p-3">Post new announcement</a>
+                </div>
+            <% } %>
+            <% anns.forEach(function(ann){ %>
+                <% include ../partials/annCard %>
+            <% }); %>
+
+
+        </div>
+        <div class="col-2 sideBar">
+
+        </div>
+    </div>
+</div>
+
+<% include ../partials/footer %>

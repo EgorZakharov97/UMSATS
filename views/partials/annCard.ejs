@@ -1,0 +1,19 @@
+<div class="border shadow-sm p-3 mb-5 bg-white rounded m-3">
+    <div class="d-flex justify-content-between">
+        <h4 class="p-2"><%= ann.title %></h4>
+        <% if(ADMIN){ %>
+            <div class="d-flex justify-content-end">
+                <a class="btn btn-warning p-2 m-2" href="/main/<%= ann._id %>/edit">edit</a>
+                <form method="post" action="/main/<%= ann._id %>/?_method=DELETE">
+                    <button class="btn btn-warning p-2 m-2">delete</button>
+                </form>
+            </div>
+        <% } %>
+    </div>
+    <p class="p-2"><%= ann.text %></p>
+    <br>
+    <div class="d-flex justify-content-between">
+        <p class="p-2"><%= ann.ps %></p>
+        <p class="p-2"><%= ann.date.toDateString() %></p>
+    </div>
+</div>

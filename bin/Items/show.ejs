@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css">
+    <link rel="stylesheet" type="text/css" href="/public/bootstrap-social.css">
+
+    <script src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+    <script src="../static/libs/chart.js/dist/Chart.js"></script>
+    <script src="../static/libs/qrcode/build/qrcode.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/public/style.css">
+
+    <title>Show</title>
+</head>
+<body>
+
+<!--Information about item-->
+<% include ../partials/itemCard %>
+
+<!--Some vary important statistics-->
+<canvas id="myChart"></canvas>
+
+<!--QR code-->
+<canvas id="QRCode"></canvas>
+
+<p>Items available: <%= item.storage.quantityAvailable %></p>
+<!--Take button-->
+<form action="/items/<%= item._id %>/take" method="post">
+    <input type="date" name="dateReturn" min="05-03-2019" max="01-01-2020">
+    <button>Take</button>
+</form>
+
+<!--Return button-->
+<form action="/items/<%= item._id %>/return?_method=PUT" method="post">
+    <% item.records.forEach(function(record){ %>
+        <% if(record.user.username == user.username && record.returned == false){ %>
+            <input type="radio" name="shortID" value="<%= record.item.shortID %>"> <%= record.item.name %> - <%= record.item.shortID %>
+    <% }}); %>
+    <button>Return</button>
+</form>
+
+<div id="output"></div>
+
+<div class="container">
+    <p>Visits this month: <%= item.statistics.visitsThisMonth %></p>
+</div>
+
+
+<!--Comments-->
+<% item.comments.forEach(function(comment){ %>
+        <div class="container">
+            <p><strong><%= comment.author.username %></strong> - <%= comment.text %></p>
+            <a class="btn btn-small btn-warning" href="/items/<%= item._id %>/comments/<%= comment._id %>/edit">edit</a>
+            <form method="post" action="/items/<%= item._id %>/comments/<%= comment._id %>?_method=DELETE">
+              <button class="btn btn-warning btn-small">Delete</button>
+            </form>
+        </div>
+        <% }); %>
+
+<!--Some crazy shit-->
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['January', 'February', 'March', 'May', 'April', 'June', 'Jule', 'August', 'September', 'October', 'November', 'December'],
+            datasets: [{
+                label: '# of Takes',
+                data: <%- JSON.stringify(item.statistics.yearLog.wasTaken) %>,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    var qr = document.getElementById('QRCode');
+    QRCode.toCanvas(qr, window.location.toString(), function (error) {
+        if (error) console.error(error)
+    })
+
+</script>
+
+</body>

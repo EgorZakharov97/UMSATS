@@ -1,0 +1,83 @@
+<% include ../partials/header %>
+<% include ../partials/navbar %>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2 sideBar">
+            <!--cart-->
+            <% let i = 0; %>
+            <% if(user.cart.length != 0){ %>
+                <input type="date" id="dateForEach">
+                <button id="applyDateForEach">Apply for each</button>
+                <form method="post" id="cartForm">
+                    <% user.cart.forEach(function(record){ %>
+                        <% i++; %>
+                        <% include ../partials/cartCard.ejs %>
+                    <% }); %>
+                </form>
+                <button form="cartForm" formaction="/itemManager/take/"> Take all</button>
+            <% }; %>
+
+            <!--Generic form to delete an item-->
+            <form action="/itemManager/deleteFromCart/" method="post" id="delFromCartForm" hidden>
+                <input id="delFromCartInput" type="radio" name="toDelete" checked>
+                <p id="randex"></p>
+            </form>
+
+        </div>
+        <div class="col-8">
+            <!---->
+            <!---->
+            <!--MAIN PAGE-->
+            <h1>Inventory</h1>
+            <div class="card-columns">
+                <% items.forEach(function(item){ %>
+                    <% include ../partials/itemCard %>
+                <% }); %>
+            </div>
+        </div>
+        <!---->
+        <!---->
+        <!--SIDE BAR-->
+        <div class="col-2 sideBar">
+            <div class="container-fluid" id="userInfo">
+                <div class="row">
+                    <div class="col-6">
+                        <p><%= user.username%></p>
+                        <p>Items on hand: <%= user.numItemsOnHand %></p>
+                        <p>Num times taken: <%= user.numTaken%></p>
+                    </div>
+                    <div class="col-6">
+                        <p>Avatar should go here (maybe)</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <% user.records.forEach(function(record){ %>
+                            <% if(!record.itemInfo.disposable && !record.returned){ %>
+                                <% include ../partials/recordCard %>
+                        <% }}); %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    // Applying date for each case
+    $("#applyDateForEach").click(function(){
+        $(".dateEachCart").val($("#dateForEach").val())
+    });
+
+    // Configure delete form
+    $(".delFromCartBtn").click(function(){
+        $("#delFromCartInput").val($(this).val());
+        $("#delFromCartForm").submit();
+    });
+
+</script>
+
+
+<% include ../partials/footer %>

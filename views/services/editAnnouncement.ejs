@@ -1,0 +1,26 @@
+<% include ../partials/header.ejs %>
+<% include ../partials/navbar %>
+
+<!--NEW ANNOUNCEMENT-->
+
+<div class="container" style="width: 50%;">
+    <h1>
+        Edit announcement
+    </h1>
+    <form method="POST" action="/main/<%= ann._id %>?_method=PUT" class="border shadow-sm p-3 mb-5 bg-white rounded">
+        <div class="form-group">
+            <lable for="titleInput">Edit title</lable>
+            <input id="titleInput" class="form-control" type="text" name="new[title]" value="<%= ann.title %>">
+            <label for="textInput">Edit text</label>
+            <textarea rows="4" cols="50" id="textInput" class="form-control" type="text" name="new[text]"><%= ann.text %></textarea>
+            <lable for="psInput">Edit postscriptum</lable>
+            <input id="psInput" class="form-control" type="text" name="new[ps]" value="<%= ann.ps %>">
+        </div>
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="checkBox" required>
+        </div>
+        <button type="submit" class="btn-primary">Submit</button>
+    </form>
+</div>
+
+<% include ../partials/footer %>

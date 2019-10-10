@@ -1,0 +1,26 @@
+<% include ../partials/header %>
+<% include ../partials/navbar %>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2">
+            <div id="fakeImage"></div>
+        </div>
+        <div class="col-5">
+            <div class="container">
+                <h3><strong>Username: </strong> <%= user.username %></h3>
+                <p><strong>Email: </strong><%= user.email %></p>
+                <p><strong>Number of items taken so fate: </strong><%= user.numTaken %></p>
+                <p><strong>Items pending: </strong><%= user.numItemsOnHand %></p>
+                <p><strong>Number of late returns: </strong><%= user.numLateReturns %></p>
+            </div>
+        </div>
+        <div class="col-5">
+            <% user.records.slice().reverse().forEach(function(record){ %>
+                <% include ../partials/recordCard %>
+            <% }); %>
+        </div>
+    </div>
+</div>
+
+<% include ../partials/footer %>

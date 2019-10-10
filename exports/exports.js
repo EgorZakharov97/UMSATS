@@ -1,7 +1,9 @@
 const Comment = require("../models/comment");
-const ADMIN = "5c80b5a2d77ebb55ec560393";
-const EMAIL = "skymailsenter@gmail.com";
-const EMAIL_PASS = "Mambahuyamba9300909google";
+const ADMIN = "5cb58c25de269a30e47d807f";
+const CASHIER = "5cb92a312c14c358304e9669";
+const EMAIL = "***";
+const EMAIL_PASS = "***";
+const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'G', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 module.exports = {
 
@@ -9,8 +11,9 @@ module.exports = {
     EMAIL: EMAIL,
     EMAIL_PASS: EMAIL_PASS,
 
-    // ADMIN ID for superuser verification
+    // superuser verification
     ADMIN: ADMIN,
+    CASHIER: CASHIER,
 
     //-----------
     // MIDDLEWARE
@@ -21,15 +24,26 @@ module.exports = {
         return next();
     }
     res.redirect("/login");
-},
+    },
+
     isLoggedAdmin: function(req, res, next) {
         if(req.isAuthenticated()){
             if(req.user._id == ADMIN){
                 return next();
             }
         }
-        res.redirect("/items");
+        res.redirect("/login");
     },
+
+    isLoggedCashier: function(req, res, next) {
+        if(req.isAuthenticated()){
+            if(req.user._id == CASHIER){
+                return next();
+            }
+        }
+        res.redirect("/login");
+    },
+
     checkCommentOwnership: function (req, res, next){
         if(req.isAuthenticated()){
             Comment.findById(req.params.comment_id, function(err, comment) {
@@ -50,6 +64,13 @@ module.exports = {
         } else {
             res.redirect("/login");
         }
+    },
+    createShortID: function (){
+        let res = "";
+        for(let i = 0; i < 6; i++){
+            res += LETTERS[Math.floor(Math.random()* 25)];
+        }
+        return res;
     }
 }
 

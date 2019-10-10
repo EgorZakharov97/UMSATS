@@ -1,11 +1,29 @@
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 // Item
-var ItemSchema = new mongoose.Schema({
+let ItemSchema = new mongoose.Schema({
     name: String,
-    image: {path: String, mimeType: String},
+    category: String,
+    location: String,
     description: String,
-    availability: Boolean,
+    image: {path: String, mimeType: String},
+    disposable: Boolean,
+    available: Boolean,
+    quantityAvailable: Number,
+    statistics: {
+        visitsThisMonth: Number,
+        takenThisMonth: Number,
+        yearLog: {
+            visits: [],
+            wasTaken: []
+        }
+    },
+    storage: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Piece",
+            }
+    ],
     records: [
         {
             type: mongoose.Schema.Types.ObjectId,

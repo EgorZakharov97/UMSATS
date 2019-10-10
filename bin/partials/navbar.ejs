@@ -1,0 +1,26 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/items">
+        <img src="../static/assets/img/UMSATS-banner.png" width="180" height="50" alt="">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <form class="form-inline my-2 my-lg-0" method="post" action="/items/search">
+            <input class="form-control mr-sm-2" name="searchKey" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav ml-auto">
+            <p class="nav-item navbar-text font-italic mr-left">logged in as <%= user.username%></p>
+            <% if(user._id == ADMIN){ %>
+                <a class="nav-item nav-link" href="/items/newItem">Create new</a>
+            <% }; %>
+            <a class="nav-item nav-link" href="/logout">Logout</a>
+        </div>
+    </div>
+</nav>

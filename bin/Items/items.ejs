@@ -1,0 +1,13 @@
+<% include ../partials/header %>
+<% include ../partials/navbar %>
+
+<h1>Here will be all items</h1>
+<% if(user._id == ADMIN) { %>
+<a href="/items/newItem">Create new Item</a>
+<% } %>
+
+<% items.forEach(function(item){ %>
+<% include ../partials/itemCard %>
+<% }); %>
+
+<% include ../partials/footer %>

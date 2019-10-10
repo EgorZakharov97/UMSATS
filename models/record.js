@@ -1,7 +1,7 @@
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 // Record
-var RecordSchema = new mongoose.Schema({
+const RecordSchema = new mongoose.Schema({
     user: {
         id: {
             type: mongoose.Schema.Types.ObjectId,
@@ -10,12 +10,20 @@ var RecordSchema = new mongoose.Schema({
         username: String,
         email: String
     },
+    itemInfo: {
+        name: String,
+        image: String,
+        shortID: String,
+        quantityTaken: Number,
+        disposable: Boolean,
+    },
     item: {
-        id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Record"
-        },
-        name: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Item"
+    },
+    piece: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Piece"
     },
     returned: Boolean,
     dateTaken: Date,

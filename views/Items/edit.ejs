@@ -1,28 +1,52 @@
 <% include ../partials/header %>
-
-<title>UMSATS Edit Item</title>
-</head>
-<body>
+<% include ../partials/navbar %>
 
 <div class="container">
-    <form action="/items/<%= item._id %>?_method=PUT" method="post" enctype="multipart/form-data">
-  <div class="form-group">
-    <img class="card-img-top" src="<%= item.image.path %>" alt="Card image cap">
-    <input type="text" name="item[name]" class="form-control" id="InputName" value="<%= item.name %>">
-  </div>
-  <div class="form-group">
-    <label for="imageURL">Update image</label>
-    <input type="file" name="image" class="form-control" id="imageURL">
-  </div>
-  <div class="form-group form-check">
-    <label for="textDescription">What is it?</label>
-    <textarea rows="4" cols="50" class="form-control" type="text" name="item[description]" id="textDescription"><%= item.description %></textarea>
-  </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-</div>
-<form action="/items/<%= item._id %>?_method=DELETE" method="post">
-    <button>Delete!</button>
+  <form action="/items/<%= item._id %>?_method=PUT" method="POST">
+    <div class="form-group">
+      <label for="InputName">How is it called?</label>
+      <input type="text" name="item[name]" class="form-control" id="InputName" value="<%= item.name %>">
+    </div>
+    <select name="item[category]" size="4">
+      <option value="Category1" <% if(item.category == "Category1"){%> checked <% } %>>Category1</option>
+      <option value="Category2" <% if(item.category == "Category2"){%> checked <% } %>>Category2</option>
+      <option value="Category3" <% if(item.category == "Category3"){%> checked <% } %>>Category3</option>
+      <option value="Category4" <% if(item.category == "Category4"){%> checked <% } %>>Category4</option>
+    </select>
+    <!--<div class="form-group">-->
+      <!--<label for="imageIn">Select image</label>-->
+      <!--<input type="file" name="image" class="form-control" id="imageIn">-->
+    <!--</div>-->
+    <% if(item.disposable){ %>
+      <div class="form-group">
+        <label for="imageIn">Put quantity of items available</label>
+        <input type="number" name="item[quantity]" class="form-control" id="imageIn">
+      </div>
+    <% } %>
+    <div class="form-group">
+      <label for="imageIn">Where this item is going to be located</label>
+      <input type="text" name="item[location]" class="form-control" id="imageIn" value="<%= item.location %>">
+    </div>
+    <div class="form-group form-check">
+      <label for="textDescription">What is it?</label>
+      <textarea rows="4" cols="50" class="form-control" type="text" name="item[description]" id="textDescription"><%= item.description%></textarea>
+    </div>
+    <div class="d-flex justify-content-between">
+      <button type="submit" class="btn-primary">Submit</button>
+      <button type="button" id="deleteBtn" class="btn-danger">Delete</button>
+    </div>
   </form>
+
+  <form id="deleteForm" action="/items/<%= item._id %>?_method=DELETE" method="POST"></form>
+
+</div>
+
+<script>
+
+  $("#deleteBtn").click(function(){
+      $("#deleteForm").submit();
+  });
+
+</script>
 
 <% include ../partials/footer %>

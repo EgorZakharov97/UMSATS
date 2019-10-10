@@ -5,14 +5,21 @@ var UserSchema = new mongoose.Schema({
     username: String,
     email: String,
     password: String,
+    numTaken: Number,
+    numItemsOnHand: Number,
+    numLateReturns: Number,
     records: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Record",
         }
     ],
-    numTaken: Number,
-    numLateReturns: Number
+    cart: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref:"Record",
+        }
+    ]
 });
 
 UserSchema.plugin(passportLocalMongoose);

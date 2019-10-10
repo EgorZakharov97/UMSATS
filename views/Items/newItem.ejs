@@ -5,21 +5,40 @@
 <body>
 
 <div class="container">
-    <form action="/items" method="post" enctype="multipart/form-data">
-  <div class="form-group">
-    <label for="InputName">How is it called?</label>
-    <input type="text" name="item[name]" class="form-control" id="InputName" placeholder="Enter name">
-  </div>
-  <div class="form-group">
-    <label for="imageIn">Select image</label>
-    <input type="file" name="image" class="form-control" id="imageIn">
-  </div>
-  <div class="form-group form-check">
-    <label for="textDescription">What is it?</label>
-    <textarea rows="4" cols="50" class="form-control" type="text" name="item[description]" id="textDescription" placeholder="Add description"></textarea>
-  </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+  <form action="/items" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="InputName">How is it called?</label>
+      <input type="text" name="item[name]" class="form-control" id="InputName" placeholder="Enter name" required>
+    </div>
+    <select name="item[category]" size="3">
+      <option value="Category1">Category1</option>
+      <option value="Category2">Category2</option>
+      <option value="Category3">Category3</option>
+      <option value="Category4">Category4</option>
+    </select>
+    <div class="form-group">
+      <label for="imageIn">Select image</label>
+      <input type="file" name="image" class="form-control" id="imageIn" required>
+    </div>
+    <div class="form-group">
+      <label for="imageIn">Put quantity of items available</label>
+      <input type="number" name="quantity" class="form-control" id="imageIn" required>
+    </div>
+    <div class="form-group">
+      <label for="imageIn">Where this item is going to be located</label>
+      <input type="text" name="item[location]" class="form-control" id="imageIn" required>
+    </div>
+    <div class="form-group">
+      <label for="">Check if this item is one use only</label><br>
+      <input type="radio" name="disposable" value="false" checked>Reusable<br>
+      <input type="radio" name="disposable" value="true">Disposable<br>
+    </div>
+    <div class="form-group form-check">
+      <label for="textDescription">What is it?</label>
+      <textarea rows="4" cols="50" class="form-control" type="text" name="item[description]" id="textDescription" placeholder="Add description" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
 </div>
 
 <% include ../partials/footer %>

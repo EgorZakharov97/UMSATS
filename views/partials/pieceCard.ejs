@@ -1,0 +1,23 @@
+<div class="row pieceCard" style="<% if(!piece.available){ %> background-color: #da7908 <%}%>">
+    <div class="row">
+        <div class="col-4">
+            <img class="cardImg" src="..\<%= item.image.path %>">
+        </div>
+        <div class="col-8">
+            <a href="/items/<%= item._id %>/inventory/<%= piece._id %>"><strong><%= item.name %></strong></a>
+            <p>ID: <%= piece.shortID %></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <% if(piece.available){ %>
+                <form action="/itemManager/addOneToCart/<%= piece._id %>" method="post">
+                    <button type="submit">Add to cart</button>
+                </form>
+            <% } else { %>
+                <p>This item is unavailable</p>
+            <% } %>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,28 @@
+<% include ../partials/header %>
+
+<title>UMSATS Edit Item</title>
+</head>
+<body>
+
+<div class="container">
+    <form action="/items/<%= item._id %>?_method=PUT" method="post" enctype="multipart/form-data">
+  <div class="form-group">
+    <img class="card-img-top" src="<%= item.image.path %>" alt="Card image cap">
+    <input type="text" name="item[name]" class="form-control" id="InputName" value="<%= item.name %>">
+  </div>
+  <div class="form-group">
+    <label for="imageURL">Update image</label>
+    <input type="file" name="image" class="form-control" id="imageURL">
+  </div>
+  <div class="form-group form-check">
+    <label for="textDescription">What is it?</label>
+    <textarea rows="4" cols="50" class="form-control" type="text" name="item[description]" id="textDescription"><%= item.description %></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+</div>
+<form action="/items/<%= item._id %>?_method=DELETE" method="post">
+    <button>Delete!</button>
+  </form>
+
+<% include ../partials/footer %>

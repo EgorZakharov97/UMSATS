@@ -1,0 +1,26 @@
+<% include ../partials/header.ejs %>
+<% include ../partials/navbar %>
+
+<!--NEW ANNOUNCEMENT-->
+
+<div class="container" style="width: 50%;">
+    <h1>
+        Make it loud!
+    </h1>
+    <form method="POST" action="/main" class="border shadow-sm p-3 mb-5 bg-white rounded">
+        <div class="form-group">
+            <lable for="titleInput">Add title</lable>
+            <input id="titleInput" class="form-control" type="text" name="ann[title]" placeholder="title">
+            <label for="textInput">Add some text</label>
+            <textarea rows="4" cols="50" id="textInput" class="form-control" type="text" name="ann[text]" placeholder="add Comment"></textarea>
+            <lable for="psInput">Postscriptum if you'd like to...</lable>
+            <input id="psInput" class="form-control" type="text" name="ann[ps]" placeholder="P.S.">
+        </div>
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="checkBox" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<% include ../partials/footer %>

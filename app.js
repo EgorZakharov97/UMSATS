@@ -7,19 +7,26 @@ const express =             require("express"),
     localStrategy =         require("passport-local"),
     passportLocalMongoose = require("passport-local-mongoose"),
     User                  = require("./models/user"),
+    cameBack              = require("./models/cameBack"),
     serveStatic           = require("serve-static"),
     methodOverride        = require("method-override"),
     ADMIN                 = require("./exports/exports").ADMIN,
-    multer                = require("multer");
-    
-// ROUTES
-var AuthRoutes = require("./routes/auth"),
-    IndexRoutes = require("./routes/index"),
-    ItemRoutes = require("./routes/items"),
-    CommentRoutes = require("./routes/comments");
+    schedule              = require("node-schedule");
 
-// MAKE ITEMIMG FOLDER PUBLIC
-app.use('/items/views/assets/itemImg', express.static('views/assets/itemImg'));
+// Additional functions
+const logic = require("./serverLogic/stats"),
+      updateStats = logic.updateStats;
+
+// ROUTES
+const AuthRoutes = require("./routes/auth"),
+      IndexRoutes = require("./routes/index"),
+      ItemRoutes = require("./routes/items"),
+      CommentRoutes = require("./routes/comments"),
+      ShopperRoutes = require("./routes/shopper"),
+      ServiceRoutes = require("./routes/services");
+
+// MAKE FOLDER PUBLIC
+app.use('/views/static/assets/', express.static('views/static/assets/'));
 
 // CONFIGURATION AND MONGOOSE
 mongoose.connect("mongodb://localhost/umsats", {useNewUrlParser: true});
@@ -44,7 +51,7 @@ passport.deserializeUser(User.deserializeUser());
 // SHOW USER MIDDLEWARE
 app.use(function(req, res, next){
     res.locals.user = req.user;
-    res.locals.ADMIN = ADMIN;
+    res.locals.ADMIN = req.user != undefined && req.user._id == ADMIN;
     next();
 });
 
@@ -53,8 +60,14 @@ app.use(AuthRoutes);
 app.use(IndexRoutes);
 app.use("/items", ItemRoutes);
 app.use("/items/:id/comments", CommentRoutes);
+app.use("/itemManager", ShopperRoutes);
+app.use("/main", ServiceRoutes);
 
 // LISTENER
 app.listen(3000, function(){
-    console.log("Server has started");
+    date = new Date();
+    console.log("Server has started at " + date.getHours() + ":" + date.getMinutes());
 });
+
+// Updating statistics about each item
+schedule.scheduleJob('0 0 0 1 * *', updateStats);

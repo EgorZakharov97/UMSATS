@@ -1,0 +1,16 @@
+<% include ../partials/header %>
+
+<h1><%= piece.item.name %></h1>
+<img src="../../../<%= piece.item.image.path %>">
+<p>Piece ID: <%= piece.shortID%></p>
+
+<p>This piece was taken by: </p>
+<% piece.records.forEach(function(record){%>
+    <% include ../partials/recordCard %>
+<% }); %>
+
+<form action="/items/<%= piece.item._id%>/inventory/<%= piece._id%>/delete?_method=DELETE" method="POST">
+    <button class="btn-warning">Delete</button>
+</form>
+
+<% include ../partials/footer %>

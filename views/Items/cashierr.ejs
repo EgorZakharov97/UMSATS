@@ -1,0 +1,26 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <% records.forEach(function(record){ %>
+        <div class="container" style="background-color: #1ab7ea; margin: 30px">
+            <div class="row">
+                <div class="col-6">
+                    <p><strong><%= record.itemInfo.name %></strong> was taken by <strong><%= record.user.username %></strong> (<%= record.user.email %>)</p>
+                    <br>
+                    <p>Taken: <%= record.dateTaken %></p>
+                    <p>Expected: <%= record.dateReturn %></p>
+                    <p>Returned: <%= record.returned %></p>
+                </div>
+                <div class="col-6">
+                    <form action="/itemManager/return/<%= record.piece %>" method="post">
+                        <button>Return</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    <% }); %>
+</div>
+
+
+<% include ../partials/footer %>
