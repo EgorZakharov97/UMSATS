@@ -1,6 +1,6 @@
 const Comment = require("../models/comment");
-const ADMIN = "5cb58c25de269a30e47d807f";
-const CASHIER = "5cb92a312c14c358304e9669";
+const ADMIN = "5dc5eebaa723f30650ffd162";
+const CASHIER = "5dcb9b45af6ebf1948864e20";
 const EMAIL = "***";
 const EMAIL_PASS = "***";
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'G', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];

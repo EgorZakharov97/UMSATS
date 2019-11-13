@@ -15,7 +15,7 @@ const myFunc = require('../exports/exports'),
 
 // show register page
 router.get("/register", function(req, res) {
-    res.render("register", {title: "Register"});
+    res.render("register");
 });
 
 // register a new user
@@ -35,14 +35,14 @@ router.post("/register", function(req, res){
         // this will log the user in
         passport.authenticate("local")(req, res, function(){
             console.log("Registered: " + req.user.username + " (" + req.user._id + ")");
-            res.redirect("/items");
+            res.redirect("/");
         });
     });
 });
 
 // show login page
 router.get("/login", function(req, res) {
-    res.render("login", {title: "Login"});
+    res.render("login");
 });
 
 // login a user
@@ -51,7 +51,7 @@ router.post(
         passport.authenticate(
             "local",
             {
-                successRedirect: "/items",
+                successRedirect: "/main",
                 failureRedirect: "/login"
             }
         ),
@@ -64,40 +64,29 @@ router.post(
 router.get(
     "/logout",
     function(req, res) {
+        req.cookies['username'] = 'null';
+        req.cookies['pwd'] = 'null';
         req.logout();
         res.redirect("/login");
     }
 );
 
-// shows current user page
+// shows any user page
 router.get(
-    "/user/:username",
+    "/user/:id",
     isLoggedIn,
     function(req, res){
-        User.findOne({username: req.params.username}).populate('records').exec(function(err, user){
+        User.findById(req.user._id).populate('cart').exec(function(err, currUser){
             if(err){
-                console.log(err);
+                console.log(err)
             } else {
-                if(!(user == null || user._id == ADMIN || user._id == CASHIER)){
-                    res.render("user/userpage", {title: ("UMSATS: " + user.username), user: user});
-                } else {
-                    res.redirect("/user");
-                }
-            }
-        })
-    }
-);
-
-// show any user page
-router.get(
-    "/user",
-    isLoggedIn,
-    function(req, res){
-        User.findById(req.user._id).populate('records').exec(function(err, user){
-            if(err){
-                console.log(err);
-            } else {
-                res.render("user/userpage", {title: ("UMSATS: " + user.username), user: user});
+                User.findById(req.params.id).populate('records').exec(function(err, foundUser){
+                    if(err){
+                        console.log(err)
+                    } else {
+                        res.render('user', {user: currUser, display: foundUser})
+                    }
+                })
             }
         })
     }

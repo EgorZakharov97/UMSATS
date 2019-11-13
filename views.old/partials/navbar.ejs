@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/items">
+        <img src="../static/assets/img/UMSATS-banner.png" width="180" height="50" alt="">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+        <ui class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <a class="nav-item nav-link" href="/main">Main</a>
+            <a class="nav-item nav-link" href="/items">Items</a>
+        </ui>
+
+        <!--Search Box-->
+        <% if(user != undefined){ %>
+            <form class="form-inline" method="post" action="/items/search">
+                <div class="form-group">
+                    <input class="form-control" name="searchKey" type="text" placeholder="Search" aria-label="Search">
+                    <button class="btn form-control" type="submit">Search</button>
+                </div>
+            </form>
+        <% } %>
+
+        <% if(user == undefined){ %>
+            <div class="navbar-nav ml-auto">
+                <a class="nav-item nav-link" href="/login">Login</a>
+                <a class="nav-item nav-link" href="/register">Register</a>
+            </div>
+        <% } else {%>
+            <div class="navbar-nav ml-auto">
+                <p class="nav-item navbar-text font-italic mr-left">logged in as <%= user.username%></p>
+                <% if(ADMIN){ %>
+                    <a class="nav-item nav-link" href="/items/newItem">Create new</a>
+                <% }; %>
+                <a class="nav-item nav-link" href="/logout">Logout</a>
+            </div>
+        <% } %>
+
+    </div>
+</nav>
+

@@ -57,14 +57,15 @@ router.post("/addOneToCart/:id", isLoggedIn, function(req, res){
 
                                 user.cart.push(record);
                                 user.save();
+                                console.log("Item " + record.item.name + " was added to the cart of " + user.username)
                             }
                         });
                     }
                 }
+            res.redirect('/items/' + piece.item._id);
             });
         }
     });
-    res.redirect("/items");
 });
 
 // add disposable to cart
@@ -95,13 +96,14 @@ router.post("/addToCart/:id", isLoggedIn, function(req, res){
 
                             user.cart.push(record);
                             user.save();
+                            console.log("Item " + record.item.name + " was added to the cart of " + user.username)
                         }
                     });
                 }
             });
         }
     });
-    res.redirect("/items");
+    res.redirect(req.header('Referer'));
 });
 
 // delete item from cart
@@ -124,7 +126,7 @@ router.post('/deleteFromCart', isLoggedIn, function(req, res){
             });
         }
     });
-    res.redirect("/items");
+    res.redirect(req.header('Referer'));
 });
 
 // take an item
@@ -253,7 +255,18 @@ router.post("/return/:id", isLoggedCashier, async function(req, res) {
 // show all unreturned items for cashier
 router.get("/cashier", isLoggedCashier, async function(req, res){
     let records = await Record.find({returned: false});
-    res.render("Items/cashierr", {title: "Cashier page!", records: records});
+    res.render("cashier", {title: "Cashier page!", records: records});
 });
+
+// show checkout page
+router.get('/checkout', isLoggedIn, function(req, res){
+    User.findById(req.user._id).populate('cart').exec(function(err, user){
+        if(err){
+            console.log(err)
+        } else {
+            res.render('checkout', {user: user})
+        }
+    })
+})
 
 module.exports = router;

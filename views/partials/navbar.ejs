@@ -1,44 +1,40 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/items">
-        <img src="../static/assets/img/UMSATS-banner.png" width="180" height="50" alt="">
-    </a>
+<!-- NAVBAR -->
 
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+<div data-collapse="none" data-animation="default" data-duration="400" class="navbar-5 w-nav">
 
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <nav role="navigation" class="nav-menu-2 w-nav-menu">
+          <a href="/main" class="nav-link-3 w-nav-link">Home</a>
+          <a href="/items" class="nav-link-2 w-nav-link">Items</a>
+          <% if(ADMIN) { %> <a href="/items/new" class="nav-link-2 w-nav-link">New</a> <% } %>
+          <a href="/user/<%= user._id %>" class="nav-link-2 w-nav-link"> <%= user.username %> </a>
+        </nav>
 
-        <ui class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <a class="nav-item nav-link" href="/main">Main</a>
-            <a class="nav-item nav-link" href="/items">Items</a>
-        </ui>
-
-        <!--Search Box-->
-        <% if(user != undefined){ %>
-            <form class="form-inline" method="post" action="/items/search">
-                <div class="form-group">
-                    <input class="form-control" name="searchKey" type="text" placeholder="Search" aria-label="Search">
-                    <button class="btn form-control" type="submit">Search</button>
+        <div class="div-block-20"><img src="../../../images/user.png" width="51" data-w-id="80ebdf82-bc62-0388-110d-3be6ce400fe0" alt="" class="image-4"><img src="../../../images/delivery-cart.svg" width="59" data-w-id="df295706-4e6d-32f7-480b-ea3c8674c353" alt="" class="image-10"></div>
+        <div class="cart">
+          <div class="div-block-18">
+            <h2 class="heading-5">Cart</h2><a data-w-id="f419285d-e837-56b3-3a34-bc91b5e0b9ac" href="#" class="button-3 w-button">Close</a></div>
+          
+          
+          <% if(user.cart.length > 0){ %>
+            <% for(let i = 0; i < user.cart.length; i++) { %>
+              <% let record = user.cart[i] %>
+              <div class="columns-3 cart-item w-row">
+                  <div class="column-8 w-col w-col-6"><img src="../../../../<%= record.itemInfo.image %>" alt="" class="image-9"></div>
+                  <div class="column-7 w-col w-col-6">
+                    <div class="div-block-17"><form action="/itemManager/deleteFromCart" method="post">
+                      <input name="toDelete" type="text" style="display:none;" value="<%=record._id%>">
+                      <button class="button button-2 w-button"> Delete</button>
+                      </form></div>
+                    <h4 class="item-header cart-item"><%= record.itemInfo.name %></h4>
+                    <div class="item-category"><%if(record.itemInfo.disposable){%>Quantity: <%=record.itemInfo.quantityTaken%> <%} else {%> ID: <%=record.itemInfo.shortID %> <% } %></div>
+                  </div>
                 </div>
-            </form>
-        <% } %>
+              <% } %>
+              <div class="div-block-24"><a href="/itemManager/checkout" class="button-6 w-button">Checkout</a></div>
+          <% } else { %>
+            <div class="div-block-24"><p>Your cart is empty</p></div>
+          <% } %>
+        </div>
+      </div>
 
-        <% if(user == undefined){ %>
-            <div class="navbar-nav ml-auto">
-                <a class="nav-item nav-link" href="/login">Login</a>
-                <a class="nav-item nav-link" href="/register">Register</a>
-            </div>
-        <% } else {%>
-            <div class="navbar-nav ml-auto">
-                <p class="nav-item navbar-text font-italic mr-left">logged in as <%= user.username%></p>
-                <% if(ADMIN){ %>
-                    <a class="nav-item nav-link" href="/items/newItem">Create new</a>
-                <% }; %>
-                <a class="nav-item nav-link" href="/logout">Logout</a>
-            </div>
-        <% } %>
-
-    </div>
-</nav>
-
+<!-- END NAVBAR -->

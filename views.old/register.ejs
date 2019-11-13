@@ -1,0 +1,28 @@
+<% include partials/header %>
+    
+<!--Start-->
+<div class="modal-dialog text-center">
+    <div class="col-xs-12 main-section">
+        <div class="modal-content">
+            <div class="col-12 user-img">
+                <img src="static/assets/img/UMSATS-banner.png">
+            </div>
+
+            <form class="col-12" action="/register" method="POST">
+                <div class="form-group">
+                    <input type="text" name="username" class="form-control" placeholder="Enter Username">
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email" class="form-control email" placeholder="Enter Email">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" class="form-control pass" placeholder="Repeart Password">
+                </div>
+                <button type="submit" class="btn"><i class="fas fa-sign-in-alt"></i>Register</button>
+            </form>
+        </div><!-- End of modal content-->
+    </div>
+</div>
+<!--End-->
+
+<% include partials/footer %>

@@ -1,0 +1,32 @@
+<% include partials/header %>
+
+<!--Start-->
+<div class="modal-dialog text-center">
+    <div class="col-xs-12 main-section">
+        <div class="modal-content">
+            <div class="col-12 user-img">
+                <img src="static/assets/img/UMSATS-banner.png">
+            </div>
+
+            <form class="col-12" action="/login" method="POST">
+                <div class="form-group">
+                    <input type="username" name="username" class="form-control email" placeholder="Enter Username">
+                    <input type="password" name="password" class="form-control pass" placeholder="Enter Password">
+
+                </div>
+                <button type="submit" class="btn"><i class="fas fa-sign-in-alt"></i>Login</button>
+                <div class="col-12 google">
+                    <!--<button type="submit" class="btn">-->
+                    <i class="fab fa-google"></i>
+                        Login with Google</button>
+                </div>
+            </form>
+            <div class="col-12 forgot">
+                <a href="/register">No Account? / Forgot Password?</a>
+            </div>
+        </div><!-- End of modal content-->
+    </div>
+</div>
+<!--End-->
+
+<% include partials/footer %>

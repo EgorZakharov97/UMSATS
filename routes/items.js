@@ -21,7 +21,7 @@ const multer = require("multer"),
     },
     storage = multer.diskStorage({
         destination: function(req, res, cb){
-            cb(null, './views/static/assets/items/');
+            cb(null, './public/items-pics');
         },
         filename: function(req, file, cb){
             cb(null, req.body.item.name + '.' + file.originalname.split('.')[1]);
@@ -60,9 +60,15 @@ var transporter = nodemailer.createTransport({
 // ITEMS ROUTES
 //-------------
 
-// show create new item admin page
-router.get("/newItem", isLoggedAdmin, function(req, res){
-    res.render("Items/newItem", {title: "Create new item"});
+// show create new item for admin
+router.get("/new", isLoggedAdmin, function(req, res){
+    User.findById(req.user._id).populate("cart").exec(function(err, user){
+        if(err){
+            console.log(err);
+        } else {
+            res.render("new-item", {user: user});
+        }
+    })
 });
 
 // show all items
@@ -74,17 +80,16 @@ router.get("/", isLoggedIn, function(req, res){
             if(err){
                 console.log(err);
             } else {
-                User.findById(req.user._id).populate("cart").populate("records").exec(function(err, user){
+                User.findById(req.user._id).populate("cart").exec(function(err, user){
                     if(err){
                         console.log(err);
                     } else {
-                        res.render("Items/items", {title: "Inventory", items: items, user: user});
+                        res.render("all-items", {items: items, user: user});
                     }
                 })
             }
         });
     }
-
 });
 
 // show complete info
@@ -102,7 +107,13 @@ router.get("/:id", isLoggedIn, function(req, res) {
                 item.statistics.visitsThisMonth++;
                 item.save();
 
-                res.render("Items/show", {title: item.name, item: item});
+                User.findById(req.user._id).populate('cart').exec(function(err, user){
+                    if(err){
+                        console.log(err)
+                    } else {
+                        res.render("item", {item: item, user: user});
+                    }
+                })
             } else {
                 res.redirect("/items");
             }
@@ -111,30 +122,55 @@ router.get("/:id", isLoggedIn, function(req, res) {
     });
 });
 
-// search route
+// search route (for users as well)
 router.post("/search", isLoggedIn, function(req, res){
-     let superString = ".*" + req.body.searchKey + ".*";
+    let superString = ".*" + req.body.searchKey + ".*";
 
-     Item.find(
-         {
-             "$or": [
-                 {name: {$regex: superString, $options: "i"}},
-                 {description: {$regex: superString, $options: "i"}}
-             ]
-         }
-     , function(err, items){
-         if(err){
-             console.log(err);
-         } else {
-             User.findById(req.user._id).populate("records").exec(function(err, user){
-                 if(err){
-                     console.log(err);
-                 } else {
-                     res.render("Items/items", {title: req.body.searchKey, items: items, user: user});
-                 }
-             })
-         }
-     });
+    if(req.body.target == "users"){
+        User.find(
+            {
+                "$or": [
+                    {username: {$regex: superString, $options: "i"}},
+                    {email: {$regex: superString, $options: "i"}}
+                ]
+            }
+        , function(err, users){
+            if(err){
+                console.log(err)
+            } else {
+                User.findById(req.user._id).populate("cart").exec(function(err, user){
+                    if(err){
+                        console.log(err)
+                    } else {
+                        res.render("show-users", {users: users, user: user});
+                    }
+                })
+            }
+        })
+    } else {
+
+        Item.find(
+            {
+                "$or": [
+                    {name: {$regex: superString, $options: "i"}},
+                    {category: {$regex: superString, $options: "i"}},
+                    {description: {$regex: superString, $options: "i"}}
+                ]
+            }
+        , function(err, items){
+            if(err){
+                console.log(err);
+            } else {
+                User.findById(req.user._id).populate("cart").exec(function(err, user){
+                    if(err){
+                        console.log(err);
+                    } else {
+                        res.render("all-items", {items: items, user: user});
+                    }
+                })
+            }
+        });
+    }
 });
 
 //post new item
@@ -144,7 +180,7 @@ router.post("/", isLoggedAdmin, upload.single('image'), function(req, res){
             console.log(err);
         } else {
             // initialising all the fields
-            newItem.image.path = req.file.path;
+            newItem.image.path = req.file.path.slice(req.file.path.indexOf('\\'), req.file.path.length)
             newItem.image.contentType = req.file.mimeType;
 
             // initialising storage fields
@@ -190,7 +226,13 @@ router.get("/:id/inventory/:pieceId", isLoggedIn, function(req, res){
         if(err){
             console.log(err);
         } else {
-            res.render("Items/piece", {title: "Piece " + piece.shortID, piece: piece});
+            User.findById(req.user._id).populate('cart').exec(function(err, user){
+                if(err){
+                    console.log(err)
+                } else {
+                    res.render("piece", {piece: piece, user: user});
+                }
+            })
         }
 
     })
@@ -206,7 +248,13 @@ router.get("/:id/edit", isLoggedAdmin, function(req, res){
         if(err){
             console.log(err);
         } else {
-            res.render("Items/edit", {title: "Edit " + item.name, item: item});
+            User.findById(req.user._id, function(err, user){
+                if(err){
+                    console.log(err)
+                } else {
+                    res.render("edit-item", {item: item, user: user});
+                }
+            })
         }
     });
 });
@@ -250,6 +298,33 @@ router.delete("/:id", isLoggedAdmin, function(req, res){
         res.redirect("/items");
     });
 });
+
+// create new piece
+router.post("/:id/inventory/new", isLoggedAdmin, function(req, res){
+    Item.findById(req.params.id, function(err, item){
+        if(err){
+            console.log(err)
+        } else {
+            Piece.create(
+                {
+                    item: item,
+                    shortID: createShortID(),
+                    available: true
+                }, function(err, piece){
+                    if(err){
+                        console.log(err)
+                    } else {
+                        item.storage.push(piece)
+                        item.quantityAvailable++
+                        item.save()
+                        console.log("Piece created for item: " + item.name + ", ID: " + piece.shortID)
+                        res.redirect('/items/' + item._id)
+                    }
+                }
+            )
+        }
+    })
+})
 
 // delete piece
 router.delete("/:id/inventory/:piece/delete", isLoggedAdmin, function(req, res){

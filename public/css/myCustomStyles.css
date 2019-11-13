@@ -1,0 +1,31 @@
+.ann-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.button-positive {
+    background-color: blueviolet;
+    color: white;
+    padding: 10px;
+    border-radius: 15px;
+    margin: 20px;
+    text-decoration: none;
+}
+
+.btn-delete {
+    background-color: red;
+    color: white;
+    padding: 10px;
+}
+
+.add-to-cart {
+    margin-bottom: 20px;
+}
+
+.my-del-btn {
+    background-color: red;
+    color: white;
+    border-radius: 3px;
+    padding: 4px;
+}

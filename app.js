@@ -11,7 +11,9 @@ const express =             require("express"),
     serveStatic           = require("serve-static"),
     methodOverride        = require("method-override"),
     ADMIN                 = require("./exports/exports").ADMIN,
-    schedule              = require("node-schedule");
+    schedule              = require("node-schedule"),
+    path                  = require('path'),
+    cookieParser               = require('cookie-parser');
 
 // Additional functions
 const logic = require("./serverLogic/stats"),
@@ -25,15 +27,20 @@ const AuthRoutes = require("./routes/auth"),
       ShopperRoutes = require("./routes/shopper"),
       ServiceRoutes = require("./routes/services");
 
-// MAKE FOLDER PUBLIC
-app.use('/views/static/assets/', express.static('views/static/assets/'));
-
-// CONFIGURATION AND MONGOOSE
-mongoose.connect("mongodb://localhost/umsats", {useNewUrlParser: true});
-app.use(serveStatic('./views'));
+// VIEW ENGINE SETUP
+app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs');
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
+app.use(express.static(path.join(__dirname, 'public')))
+
+// Cookies
+app.use(cookieParser())
+
+
+// MONGOOSE
+mongoose.connect("mongodb://localhost/umsats", {useNewUrlParser: true});
 
 // PASSPORT CONFIGURATION
 app.use(require("express-session")({
@@ -57,11 +64,22 @@ app.use(function(req, res, next){
 
 // ROUTES CONFIGURATION
 app.use(AuthRoutes);
-app.use(IndexRoutes);
 app.use("/items", ItemRoutes);
 app.use("/items/:id/comments", CommentRoutes);
 app.use("/itemManager", ShopperRoutes);
 app.use("/main", ServiceRoutes);
+app.use(IndexRoutes);
+
+// SET UP FORMATTED DATE OUTPUT
+Date.prototype.showDate = function(){
+    var mm = this.getMonth() + 1; // getMonth() is zero-based
+        var dd = this.getDate();
+
+    return [this.getFullYear(),
+            (mm>9 ? '' : '0') + '-' + mm,
+            (dd>9 ? '' : '0') + '-' + dd
+            ].join('');
+};
 
 // LISTENER
 app.listen(3000, function(){
