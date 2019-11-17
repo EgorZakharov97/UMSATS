@@ -65,7 +65,7 @@ app.use(function(req, res, next){
 // ROUTES CONFIGURATION
 app.use(AuthRoutes);
 app.use("/items", ItemRoutes);
-app.use("/items/:id/comments", CommentRoutes);
+app.use(CommentRoutes);
 app.use("/itemManager", ShopperRoutes);
 app.use("/main", ServiceRoutes);
 app.use(IndexRoutes);

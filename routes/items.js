@@ -111,7 +111,13 @@ router.get("/:id", isLoggedIn, function(req, res) {
                     if(err){
                         console.log(err)
                     } else {
-                        res.render("item", {item: item, user: user});
+                        Comment.find({item: item._id}, function(err, comments){
+                            if(err){
+                                console.log(err)
+                            } else {
+                                res.render("item", {item: item, user: user, comments: comments});
+                            }
+                        })
                     }
                 })
             } else {
@@ -222,7 +228,11 @@ router.post("/", isLoggedAdmin, upload.single('image'), function(req, res){
 
 // show piece page
 router.get("/:id/inventory/:pieceId", isLoggedIn, function(req, res){
-    Piece.findById(req.params.pieceId).populate("item").populate("records").exec( function(err, piece){
+    Piece.findById(req.params.pieceId)
+    .populate("item")
+    .populate("records")
+    .populate("comments")
+    .exec( function(err, piece){
         if(err){
             console.log(err);
         } else {

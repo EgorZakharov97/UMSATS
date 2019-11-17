@@ -26,12 +26,16 @@ router.get("/", isLoggedIn, function(req, res){
                         if(user._id === CASHIER){
                             res.redirect('/itemManager/cashier')
                         } else {
-                                res.render("main",
-                            {
-                                cameBacks: cameBack[0].items.reverse(),
+                            let variables = {
                                 anns: anns.reverse(),
                                 user: user
-                            });
+                            }
+                            if(cameBack != null && cameBack.items != undefined){
+                                variables.cameBacks = cameBack[0].items.reverse()
+                            } else {
+                                variables.cameBacks = undefined
+                            }
+                                res.render("main", variables);
                         }
                     })
                 }
