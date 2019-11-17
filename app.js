@@ -13,11 +13,12 @@ const express =             require("express"),
     ADMIN                 = require("./exports/exports").ADMIN,
     schedule              = require("node-schedule"),
     path                  = require('path'),
-    cookieParser               = require('cookie-parser');
+    cookieParser          = require('cookie-parser'),
+    GoogleStrategy        = require('passport-google-oauth20').Strategy;
 
 // Additional functions
 const logic = require("./serverLogic/stats"),
-      updateStats = logic.updateStats;
+      updateStats = logic.updateStats
 
 // ROUTES
 const AuthRoutes = require("./routes/auth"),
@@ -38,13 +39,11 @@ app.use(express.static(path.join(__dirname, 'public')))
 // Cookies
 app.use(cookieParser())
 
-
 // MONGOOSE
-mongoose.connect("mongodb://localhost/umsats", {useNewUrlParser: true});
+mongoose.connect("mongodb://localhost/umsats", {useNewUrlParser: true, useUnifiedTopology: true});
 
-// PASSPORT CONFIGURATION
+// LOCAL STRATEGY PASSPORT CONFIGURATION
 app.use(require("express-session")({
-    // can be anything
     secret: "The String used to encode and decode the sessions",
     resave: false,
     saveUninitialized: false
@@ -54,6 +53,20 @@ app.use(passport.session());
 passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+// GOOGLE PASSPORT CONFIGURATION
+passport.use(new GoogleStrategy(
+    {
+        clientID: '639142406836-uldrcmhas2doe4h87j0umjeted02f3r1.apps.googleusercontent.com',
+        clientSecret: 'NdALHxQVzFAqQfLmryY4mo0Z',
+        callbackURL: 'http://127.0.0.1:3000/login/google/callback',
+        scope: ['email' ,'profile'],
+    },
+    // verify function
+    (accessToken, refreshToken, profile, cb) => {
+        return cb(null, profile);
+      },
+))
 
 // SHOW USER MIDDLEWARE
 app.use(function(req, res, next){
@@ -81,11 +94,11 @@ Date.prototype.showDate = function(){
             ].join('');
 };
 
+// Updating statistics about each item
+schedule.scheduleJob('0 0 0 1 * *', updateStats);
+
 // LISTENER
 app.listen(3000, function(){
     date = new Date();
     console.log("Server has started at " + date.getHours() + ":" + date.getMinutes());
 });
-
-// Updating statistics about each item
-schedule.scheduleJob('0 0 0 1 * *', updateStats);
