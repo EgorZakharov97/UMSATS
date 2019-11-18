@@ -150,4 +150,21 @@ router.post('/user/permissions/:id', isLoggedIn, function(req, res){
     })
 })
 
+// display all users
+router.get('/all-users/', isLoggedIn, function(req, res){
+    User.findById(req.user._id, function(err, user){
+        if(err){
+            console.log(err)
+        } else {
+            User.find({}, function(err, allUsers){
+                if(err){
+                    console.log(err)
+                } else {
+                    res.render('show-users', {user: user, users: allUsers})
+                }
+            })
+        }
+    })
+})
+
 module.exports = router;
