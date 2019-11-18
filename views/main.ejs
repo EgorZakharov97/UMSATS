@@ -55,7 +55,7 @@
       <div class="form-block-2 w-form">
 
         <!-- new post form -->
-        <% if(ADMIN){ %>
+        <% if(user.permissions.canMakePosts){ %>
         <form id="wf-form-newPost" method="POST" action="/main" class="form-3">
           <label for="name">Title</label>
           <input type="text" class="w-input" maxlength="256" name="ann[title]" placeholder="Add title..." id="name">
@@ -71,7 +71,7 @@
           <div class="post">
             <div class="ann-head">
                 <h2><%= ann.title %></h2>
-                <% if(ADMIN){ %>
+                <% if(user.permissions.canMakePosts){ %>
                   <form action="/main/<%= ann._id %>/?_method=DELETE" method="post">
                     <button>Delete</button>
                   </form>

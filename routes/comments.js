@@ -3,6 +3,7 @@ var router = express.Router({mergeParams: true});
 var Item = require("../models/item");
 var Comment = require("../models/comment");
 var Piece = require('../models/piece');
+const User = require('../models/user');
 const myFunc = require('../exports/exports'),
     isLoggedIn = myFunc.isLoggedIn;
 
@@ -31,6 +32,7 @@ router.post('/items/:item_id/inventory/:piece_id/comments', isLoggedIn, function
                     piece.comments.push(comment)
                     piece.save()
 
+                    console.log('User ' + req.user.username + ' just posted a comment')
                     res.redirect('/items/' + piece.item + '/inventory/' + piece._id)
                 }
             })
@@ -39,21 +41,23 @@ router.post('/items/:item_id/inventory/:piece_id/comments', isLoggedIn, function
 })
 
 // delete a comment
-router.delete('/items/:item_id/inventory/:piece_id/comments/:comment_id', isLoggedIn, function(req, res){
+router.delete('/items/:item_id/inventory/:piece_id/comments/:comment_id', isLoggedIn, async function(req, res){
     let comment_id = req.params.comment_id
-    Comment.findByIdAndRemove(comment_id)
-    Piece.findById(req.params.piece_id, function(err, piece){
+    let comment = await Comment.findById(req.params.comment_id)
+    User.findById(req.user._id, function(err, user){
         if(err){
             console.log(err)
         } else {
-            let index = piece.comments.indexOf(comment_id)
-            piece.comments.splice(index, 1)
-            piece.markModified('cart')
-            piece.save()
-            console.log("User " + req.user.username + " deleted a comment")
-            res.redirect('/items/' + piece.item.id + '/inventory/' + piece._id)
+            if(user.permissions.canModifyItems){
+                comment.remove()
+                console.log(req.user.username + " has deleted a comment")
+            } else if(comment.author.id.toString() == user._id) {
+                comment.remove()
+                console.log(req.user.username + " has deleted a comment")
+            }
         }
     })
+    res.redirect('/items/' + req.params.item_id + '/inventory/' + req.params.piece_id)
 })
 
 module.exports = router;

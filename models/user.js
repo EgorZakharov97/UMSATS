@@ -8,6 +8,11 @@ var UserSchema = new mongoose.Schema({
     numTaken: Number,
     numItemsOnHand: Number,
     numLateReturns: Number,
+    permissions: {
+        canMakePosts: Boolean,
+        canModifyItems: Boolean,
+        canModifyPermissions: Boolean,
+    },
     records: [
         {
             type: mongoose.Schema.Types.ObjectId,

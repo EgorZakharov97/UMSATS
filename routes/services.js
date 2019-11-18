@@ -45,8 +45,9 @@ router.get("/", isLoggedIn, function(req, res){
 });
 
 // Post new announcement
-router.post("/", isLoggedAdmin, function(req, res){
-    Announcement.create(req.body.ann, function(err, announcement){
+router.post("/", isLoggedIn, function(req, res){
+    if(req.user.permissions.canMakePosts){
+        Announcement.create(req.body.ann, function(err, announcement){
             if(err){
                 console.log(err);
             } else {
@@ -55,7 +56,9 @@ router.post("/", isLoggedAdmin, function(req, res){
                 res.redirect("/main");
             }
         }
-    )
+    )} else {
+        res.redirect('/')
+    }
 });
 
 // Show edit announcement page
@@ -82,14 +85,18 @@ router.post("/", isLoggedAdmin, function(req, res){
 // });
 
 // delete an announcement
-router.delete("/:id", isLoggedAdmin, function(req, res){
-    Announcement.findByIdAndRemove(req.params.id, function(err){
-        if(err){
-            console.log(err);
-            res.redirect("back");
-        }
-        res.redirect("/main");
-    })
+router.delete("/:id", isLoggedIn, function(req, res){
+    if(req.user.permissions.canMakePosts){
+        Announcement.findByIdAndRemove(req.params.id, function(err){
+            if(err){
+                console.log(err);
+                res.redirect("back");
+            }
+            res.redirect("/main");
+        })
+    } else {
+        res.redirect('/')
+    }
 });
 
 module.exports = router;

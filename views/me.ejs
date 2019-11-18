@@ -21,63 +21,62 @@
 <body>
   
   <% include partials/navbar %>
+
   <div class="section-5">
-      <div class="card _2 w-container">
-        <div class="columns-2 w-row">
-          <div class="w-col <%if(user.permissions.canModifyPermissions){%> w-col-5 <%} else {%> w-col-6 <%} %>">
-            <div class="div-block-12"><img src="../images/user.png" width="181" alt="" class="image-8"></div>
-          </div>
-          <div class="column-6 w-col <%if(user.permissions.canModifyPermissions){%> w-col-5 <%} else {%> w-col-6 <%} %>">
-            <div class="div-block-13">
-              <h1 class="heading-2"><%= display.username %></h1>
-              <div class="text-block-10"><%= display.email %></div>
-              <div><strong>Number of items taken:</strong> <%= display.numTaken %></div>
-              <div><strong>Number of items on hand:</strong> <%= display.numItemsOnHand %></div>
-              <div><strong>Number of items with late return:</strong> <%= display.numLateReturns %></div>
-            </div><a href="/logout" class="btn-delete w-button">Logout</a></div>
-            <% if(user.permissions.canModifyPermissions){ %>
-              <div class="w-col w-col-2">
-                <div class="w-form">
-                  <h3>Permissions</h3>
-  
-  
-                  <form action="/user/permissions/<%=user._id%>" method="post" id="wf-form-permissions-form" name="wf-form-permissions-form" data-name="permissions form">
-                    
-                    <label class="w-checkbox">
-                      <input type="checkbox" <%if(display.permissions.canMakePosts){%>checked<%}%> id="CanMakePosts" name="canMakePosts" class="w-checkbox-input">
-                      <span for="CanMakePosts" class="w-form-label">Can make posts</span>
-                    </label>
-  
-                    <label class="w-checkbox">
-                      <input type="checkbox" <%if(display.permissions.canModifyItems){%>checked<%}%> id="CanMakePosts-3" name="canModifyItems" class="w-checkbox-input">
-                      <span for="CanMakePosts-3" class="w-form-label">Can modify items</span>
-                    </label>
-  
-                    <label class="w-checkbox">
-                      <input type="checkbox" <%if(display.permissions.canModifyPermissions){%>checked<%}%> id="CanMakePosts-2" name="canModifyPermissions" class="w-checkbox-input">
-                      <span for="CanMakePosts-2" class="w-form-label">Can modify permissions</span>
-                    </label>
-  
-                    <input type="submit" value="Update" data-wait="Please wait..." class="w-button">
-  
-                  </form>
-  
-                </div>
-              </div>
-            <% } %>
+    <div class="card _2 w-container">
+      <div class="columns-2 w-row">
+        <div class="w-col <%if(user.permissions.canModifyPermissions){%> w-col-5 <%} else {%> w-col-6 <%} %>">
+          <div class="div-block-12"><img src="../images/user.png" width="181" alt="" class="image-8"></div>
         </div>
+        <div class="column-6 w-col <%if(user.permissions.canModifyPermissions){%> w-col-5 <%} else {%> w-col-6 <%} %>">
+          <div class="div-block-13">
+            <h1 class="heading-2"><%= user.username %></h1>
+            <div class="text-block-10"><%= user.email %></div>
+            <div><strong>Number of items taken:</strong> <%= user.numTaken %></div>
+            <div><strong>Number of items on hand:</strong> <%= user.numItemsOnHand %></div>
+            <div><strong>Number of items with late return:</strong> <%= user.numLateReturns %></div>
+          </div><a href="/logout" class="btn-delete w-button">Logout</a></div>
+          <% if(user.permissions.canModifyPermissions){ %>
+            <div class="w-col w-col-2">
+              <div class="w-form">
+                <h3>Permissions</h3>
+
+
+                <form action="/user/permissions/<%=user._id%>" method="post" id="wf-form-permissions-form" name="wf-form-permissions-form" data-name="permissions form">
+                  
+                  <label class="w-checkbox">
+                    <input type="checkbox" <%if(user.permissions.canMakePosts){%>checked<%}%> id="CanMakePosts" name="canMakePosts" class="w-checkbox-input">
+                    <span for="CanMakePosts" class="w-form-label">Can make posts</span>
+                  </label>
+
+                  <label class="w-checkbox">
+                    <input type="checkbox" <%if(user.permissions.canModifyItems){%>checked<%}%> id="CanMakePosts-3" name="canModifyItems" class="w-checkbox-input">
+                    <span for="CanMakePosts-3" class="w-form-label">Can modify items</span>
+                  </label>
+
+                  <label class="w-checkbox">
+                    <input type="checkbox" <%if(user.permissions.canModifyPermissions){%>checked<%}%> id="CanMakePosts-2" name="canModifyPermissions" class="w-checkbox-input">
+                    <span for="CanMakePosts-2" class="w-form-label">Can modify permissions</span>
+                  </label>
+
+                  <input type="submit" value="Update" data-wait="Please wait..." class="w-button">
+
+                </form>
+
+              </div>
+            </div>
+          <% } %>
       </div>
     </div>
-
-
+  </div>
   <div>
-      <% if(display.records.length > 0) { %>
+      <% if(user.records.length > 0) { %>
     <div class="w-container">
       <h1>Items on hand</h1>
     </div>
     <div class="card card-user w-container">
-        <% for(let i = display.records.length-1; i >= 0; i--) { %>
-          <% let record = display.records[i] %>
+        <% for(let i = user.records.length-1; i >= 0; i--) { %>
+          <% let record = user.records[i] %>
           <% if((!record.itemInfo.disposable) && (!record.returned)) { %>
           <div class="record"><a href="/items/<%=record.item%>/inventory/<%= record.piece %>" class="w-inline-block"><img src="./../../<%= record.itemInfo.image %>" alt="" class="record-img"></a>
             <div class="div-block-11">
@@ -95,8 +94,8 @@
       <h1>Items recently taken</h1>
     </div>
     <div class="card card-user w-container">
-        <% for(let i = 0; i < display.records.length; i++) { %>
-          <% let record = display.records[i] %>
+        <% for(let i = 0; i < user.records.length; i++) { %>
+          <% let record = user.records[i] %>
           <% if(record.returned) { %>
           <div class="record"><a href="/items/<%= record.item %>/inventory/<%= record.piece %>" class="w-inline-block"><img src="./../../<%= record.itemInfo.image %>" alt="" class="record-img"></a>
             <div class="div-block-11">

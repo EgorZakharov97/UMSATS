@@ -61,14 +61,18 @@ var transporter = nodemailer.createTransport({
 //-------------
 
 // show create new item for admin
-router.get("/new", isLoggedAdmin, function(req, res){
-    User.findById(req.user._id).populate("cart").exec(function(err, user){
-        if(err){
-            console.log(err);
-        } else {
-            res.render("new-item", {user: user});
-        }
-    })
+router.get("/new", isLoggedIn, function(req, res){
+    if(req.user.permissions.canModifyItems){
+        User.findById(req.user._id).populate("cart").exec(function(err, user){
+            if(err){
+                console.log(err);
+            } else {
+                res.render("new-item", {user: user});
+            }
+        })
+    } else {
+        res.render('404')
+    }
 });
 
 // show all items
@@ -180,45 +184,49 @@ router.post("/search", isLoggedIn, function(req, res){
 });
 
 //post new item
-router.post("/", isLoggedAdmin, upload.single('image'), function(req, res){
-    Item.create(req.body.item, async function(err, newItem){
-        if(err){
-            console.log(err);
-        } else {
-            // initialising all the fields
-            newItem.image.path = req.file.path.slice(req.file.path.indexOf('\\'), req.file.path.length)
-            newItem.image.contentType = req.file.mimeType;
-
-            // initialising storage fields
-            newItem.quantityAvailable = req.body.quantity;
-            newItem.disposable = req.body.disposable;
-            newItem.available = true;
-
-            // initialising statistics fields
-            newItem.statistics.visitsThisMonth = 0;
-            newItem.statistics.takenThisMonth = 0;
-
-            for(let i = 0; i < 12; i++){
-                newItem.statistics.yearLog.visits.push(0);
-                newItem.statistics.yearLog.wasTaken.push(0);
-            }
-
-            if(!(req.body.disposable == "true")){
-                for(let q = req.body.quantity; q > 0; q--){
-                    let newPiece = await Piece.create({
-                        item: newItem,
-                        shortID: createShortID(),
-                        available: true
-                    });
-                    newItem.storage.push(newPiece);
+router.post("/", isLoggedIn, upload.single('image'), function(req, res){
+    if(req.user.permissions.canModifyItems){
+        Item.create(req.body.item, async function(err, newItem){
+            if(err){
+                console.log(err);
+            } else {
+                // initialising all the fields
+                newItem.image.path = req.file.path.slice(req.file.path.indexOf('\\'), req.file.path.length)
+                newItem.image.contentType = req.file.mimeType;
+    
+                // initialising storage fields
+                newItem.quantityAvailable = req.body.quantity;
+                newItem.disposable = req.body.disposable;
+                newItem.available = true;
+    
+                // initialising statistics fields
+                newItem.statistics.visitsThisMonth = 0;
+                newItem.statistics.takenThisMonth = 0;
+    
+                for(let i = 0; i < 12; i++){
+                    newItem.statistics.yearLog.visits.push(0);
+                    newItem.statistics.yearLog.wasTaken.push(0);
                 }
+    
+                if(!(req.body.disposable == "true")){
+                    for(let q = req.body.quantity; q > 0; q--){
+                        let newPiece = await Piece.create({
+                            item: newItem,
+                            shortID: createShortID(),
+                            available: true
+                        });
+                        newItem.storage.push(newPiece);
+                    }
+                }
+    
+                newItem.save();
+                console.log("Item created: " + newItem.name);
             }
-
-            newItem.save();
-            console.log("Item created: " + newItem.name);
-        }
-    });
-    res.redirect("/items");
+        });
+        res.redirect("/items");
+    } else {
+        res.render('404')
+    }
 });
 
 
@@ -253,109 +261,127 @@ router.get("/:id/inventory/:pieceId", isLoggedIn, function(req, res){
 //------------
 
 // show edit page
-router.get("/:id/edit", isLoggedAdmin, function(req, res){
-    Item.findById(req.params.id, function(err, item){
-        if(err){
-            console.log(err);
-        } else {
-            User.findById(req.user._id, function(err, user){
-                if(err){
-                    console.log(err)
-                } else {
-                    res.render("edit-item", {item: item, user: user});
-                }
-            })
-        }
-    });
-});
-
-// update item
-router.put("/:id", isLoggedAdmin, function(req, res){
-
-    console.log(req.body);
-    Item.findByIdAndUpdate(req.params.id, req.body.item, function(err, updated){
-        if(err){
-            console.log(err);
-            res.redirect("/items");
-        } else {
-            console.log("Item Updated: " + updated.name);
-            res.redirect("/items/" + updated._id);
-        }
-    })
-});
-
-// destroy item
-router.delete("/:id", isLoggedAdmin, function(req, res){
-    Item.findById(req.params.id, async function(err, toRemove){
-        if(err){
-            console.log(err);
-        } else {
-            let nameRemoved = toRemove.name;
-
-            if(fs.existsSync(toRemove.image.path)){
-                fs.unlinkSync(toRemove.image.path);
-            }
-            
-            for(let i = 0; i < toRemove.storage.length; i++){
-                await Piece.findByIdAndRemove(toRemove.storage[i]);
-            }
-            for(let i = 0; i < toRemove.comments.length; i++){
-                await Comment.findByIdAndRemove(toRemove.comments[i]);
-            }
-            toRemove.remove();
-            console.log("Item deleted: " + nameRemoved);
-        }
-        res.redirect("/items");
-    });
-});
-
-// create new piece
-router.post("/:id/inventory/new", isLoggedAdmin, function(req, res){
-    Item.findById(req.params.id, function(err, item){
-        if(err){
-            console.log(err)
-        } else {
-            Piece.create(
-                {
-                    item: item,
-                    shortID: createShortID(),
-                    available: true
-                }, function(err, piece){
+router.get("/:id/edit", isLoggedIn, function(req, res){
+    if(req.user.permissions.canModifyItems){
+        Item.findById(req.params.id, function(err, item){
+            if(err){
+                console.log(err);
+            } else {
+                User.findById(req.user._id, function(err, user){
                     if(err){
                         console.log(err)
                     } else {
-                        item.storage.push(piece)
-                        item.quantityAvailable++
-                        item.save()
-                        console.log("Piece created for item: " + item.name + ", ID: " + piece.shortID)
-                        res.redirect('/items/' + item._id)
-                    }
-                }
-            )
-        }
-    })
-})
-
-// delete piece
-router.delete("/:id/inventory/:piece/delete", isLoggedAdmin, function(req, res){
-    Piece.findById(req.params.piece, function(err, piece){
-        if(err){
-            console.log(err);
-        } else {
-            if(piece.available){
-                Item.findById(req.params.id, function(err, item){
-                    if(err){
-                        console.log(err);
-                    } else {
-                        item.quantityAvailable--;
-                        item.save();
+                        res.render("edit-item", {item: item, user: user});
                     }
                 })
             }
-            piece.remove();
-        }
-    });
-    res.redirect("/items/" + req.params.id);
+        });
+    } else {
+        res.render('404')
+    }
+});
+
+// update item
+router.put("/:id", isLoggedIn, function(req, res){
+    if(req.user.permissions.canModifyItems){
+        Item.findByIdAndUpdate(req.params.id, req.body.item, function(err, updated){
+            if(err){
+                console.log(err);
+                res.redirect("/items");
+            } else {
+                console.log("Item Updated: " + updated.name);
+                res.redirect("/items/" + updated._id);
+            }
+        })
+    } else {
+        res.render('404')
+    }
+});
+
+// destroy item
+router.delete("/:id", isLoggedIn, function(req, res){
+    if(req.user.permissions.canModifyItems){
+        Item.findById(req.params.id, async function(err, toRemove){
+            if(err){
+                console.log(err);
+            } else {
+                let nameRemoved = toRemove.name;
+    
+                if(fs.existsSync(toRemove.image.path)){
+                    fs.unlinkSync(toRemove.image.path);
+                }
+                
+                for(let i = 0; i < toRemove.storage.length; i++){
+                    await Piece.findByIdAndRemove(toRemove.storage[i]);
+                }
+                for(let i = 0; i < toRemove.comments.length; i++){
+                    await Comment.findByIdAndRemove(toRemove.comments[i]);
+                }
+                toRemove.remove();
+                console.log("Item deleted: " + nameRemoved);
+            }
+            res.redirect("/items");
+        });
+    } else {
+        res.render('404')
+    }
+});
+
+// create new piece
+router.post("/:id/inventory/new", isLoggedIn, function(req, res){
+    if(req.user.permissions.canModifyItems){
+        Item.findById(req.params.id, function(err, item){
+            if(err){
+                console.log(err)
+            } else {
+                Piece.create(
+                    {
+                        item: item,
+                        shortID: createShortID(),
+                        available: true
+                    }, function(err, piece){
+                        if(err){
+                            console.log(err)
+                        } else {
+                            item.storage.push(piece)
+                            item.quantityAvailable++
+                            item.save()
+                            console.log("Piece created for item: " + item.name + ", ID: " + piece.shortID)
+                            res.redirect('/items/' + item._id)
+                        }
+                    }
+                )
+            }
+        })
+    } else {
+        res.render('404')
+    }
+})
+
+// delete piece
+router.delete("/:id/inventory/:piece/delete", isLoggedIn, function(req, res){
+    if(req.user.permissions.canModifyItems){
+        Piece.findById(req.params.piece, function(err, piece){
+            if(err){
+                console.log(err);
+            } else {
+                if(piece.available){
+                    Item.findById(req.params.id, function(err, item){
+                        if(err){
+                            console.log(err);
+                        } else {
+                            item.quantityAvailable--;
+                            item.save();
+                        }
+                    })
+                }
+                piece.remove();
+            }
+        });
+        res.redirect("/items/" + req.params.id);
+    } else {
+        res.redirect('404')
+    }
 });
 
 function sendEmail(param, record){

@@ -102,7 +102,7 @@
       </div>
     <% } %>
   </div>
-  <% if(ADMIN){ %>
+  <% if(user.permissions.canModifyItems){ %>
   <form class="card w-container" method="post" action="<%= item._id%>/inventory/new">
     <button class="button-positive">Create new piece</button>
     <a class="button-positive" href="<%=item._id%>/edit">Edit item information</a>

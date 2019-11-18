@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <!--  This site was created in Webflow. http://www.webflow.com  -->
-<!--  Last Published: Sun Nov 17 2019 02:33:51 GMT+0000 (Coordinated Universal Time)  -->
-<html data-wf-page="5dc38d486a906de8a73109e6" data-wf-site="5dc35f7178cf53eb49804bfd">
+<!--  Last Published: Mon Nov 18 2019 02:26:05 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5dc3c20a78cf539a5f82bd7f" data-wf-site="5dc35f7178cf53eb49804bfd">
 <head>
   <meta charset="utf-8">
-  <title>piece</title>
-  <meta content="piece" property="og:title">
+  <title>user</title>
+  <meta content="user" property="og:title">
   <meta content="width=device-width, initial-scale=1" name="viewport">
   <meta content="Webflow" name="generator">
   <link href="css/normalize.css" rel="stylesheet" type="text/css">
@@ -100,35 +100,30 @@
       <div class="div-block-24"><a href="#" class="button-6 w-button">Checkout</a></div>
     </div>
   </div>
-  <div class="search-section"><a href="#" class="brand w-nav-brand"><img src="images/UMSATS-banner.png" width="221" alt="" class="image-12"></a>
-    <div class="container-5 w-container">
-      <div class="form-block-3 w-form">
-        <form id="email-form" name="email-form" data-name="Email Form" method="get" action="#" class="form"><select id="field" name="field" class="search-dropdown w-select"><option value="items">Items</option><option value="users">Users</option></select><input type="text" class="text-field w-input" maxlength="256" name="search-2" data-name="Search 2" placeholder="Search..." id="search-2"><input type="submit" value="Submit" data-wait="Please wait..." class="submit-button w-button"></form>
-        <div class="w-form-done">
-          <div>Thank you! Your submission has been received!</div>
+  <div class="section-5">
+    <div class="card _2 w-container">
+      <div class="columns-2 w-row">
+        <div class="w-col w-col-5">
+          <div class="div-block-12"><img src="images/user.png" width="181" alt="" class="image-8"></div>
         </div>
-        <div class="w-form-fail">
-          <div>Oops! Something went wrong while submitting the form.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="item-info">
-    <div class="w-container">
-      <div class="div-block-8">
-        <div class="text-block-6">Rasberry PI</div>
-        <div class="text-block-7">This item is available</div>
-      </div>
-      <div class="w-row">
-        <div class="column w-col w-col-6"><img src="images/item.jpg" alt="" class="good-img"></div>
-        <div class="column-2 w-col w-col-6">
-          <div class="card another">
-            <div class="text-block-4">This is <strong>not</strong> a disposable item!</div>
-            <div class="text-block-2"><strong>Items available: </strong>5</div>
-            <div class="text-block-3"><strong>Times taken: </strong>10</div>
-            <div><strong>Location: </strong>Shelf 5 box 3 left to the agriculturebuilding...</div>
-            <div><strong>Category: </strong>Microscheme</div>
-            <div><strong>Description:</strong> Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore distinctio dolore quibusdam nobis modi rem maiores, aperiam quae iste qui rerum, quis corrupti. Nobis similique nemo, modi fugiat atque sit?</div>
+        <div class="column-6 w-col w-col-5">
+          <div class="div-block-13">
+            <h1 class="heading-2">Username</h1>
+            <div class="text-block-10">username@umsats.com</div>
+            <div><strong>Number of items taken:</strong> 10</div>
+            <div><strong>Number of items on hand:</strong> 3</div>
+            <div><strong>Number of items with late return:</strong> 0</div>
+          </div><a href="#" class="btn-delete w-button">Logout</a></div>
+        <div class="w-col w-col-2">
+          <div class="w-form">
+            <h3>Permissions</h3>
+            <form id="wf-form-permissions-form" name="wf-form-permissions-form" data-name="permissions form"><label class="w-checkbox"><input type="checkbox" id="CanMakePosts" name="CanMakePosts" data-name="CanMakePosts" class="w-checkbox-input"><span for="CanMakePosts" class="w-form-label">Can make posts</span></label><label class="w-checkbox"><input type="checkbox" id="CanMakePosts-3" name="CanMakePosts-3" data-name="Can Make Posts 3" class="w-checkbox-input"><span for="CanMakePosts-3" class="w-form-label">Can modify items</span></label><label class="w-checkbox"><input type="checkbox" id="CanMakePosts-2" name="CanMakePosts-2" data-name="Can Make Posts 2" class="w-checkbox-input"><span for="CanMakePosts-2" class="w-form-label">Can modify permissions</span></label><input type="submit" value="Update" data-wait="Please wait..." class="w-button"></form>
+            <div class="w-form-done">
+              <div>Thank you! Your submission has been received!</div>
+            </div>
+            <div class="w-form-fail">
+              <div>Oops! Something went wrong while submitting the form.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -136,77 +131,60 @@
   </div>
   <div>
     <div class="w-container">
-      <h3>This item was taken by:</h3>
-      <div class="taken-by card">
-        <div class="record"><a href="#" class="w-inline-block"><img src="images/user.png" width="62" alt=""></a>
-          <div class="div-block-11">
-            <div class="record-text">Admin</div>
-            <div class="record-text">13/07/19<br></div>
-            <div class="record-text">17/07/19</div>
-          </div>
+      <h1>Items on hand</h1>
+    </div>
+    <div class="card card-user w-container">
+      <div class="record"><a href="#" class="w-inline-block"><img src="images/item.jpg" alt="" class="record-img"></a>
+        <div class="div-block-11">
+          <h3 class="record-text">Item name</h3>
+          <div class="record-text">20/12/1873</div>
+          <div class="record-text">20/23/1873</div>
         </div>
-        <div class="record"><a href="#" class="w-inline-block"><img src="images/user.png" width="62" alt=""></a>
-          <div class="div-block-11">
-            <div class="record-text">Admin</div>
-            <div class="record-text">13/07/19<br></div>
-            <div class="record-text">17/07/19</div>
-          </div>
+      </div>
+      <div class="record"><a href="#" class="w-inline-block"><img src="images/item.jpg" alt="" class="record-img"></a>
+        <div class="div-block-11">
+          <h3 class="record-text">Item name</h3>
+          <div class="record-text">20/12/1873</div>
+          <div class="record-text">20/23/1873</div>
         </div>
-        <div class="record"><a href="#" class="w-inline-block"><img src="images/user.png" width="62" alt=""></a>
-          <div class="div-block-11">
-            <div class="record-text">Admin</div>
-            <div class="record-text">13/07/19<br></div>
-            <div class="record-text">17/07/19</div>
-          </div>
-        </div>
-        <div class="record"><a href="#" class="w-inline-block"><img src="images/user.png" width="62" alt=""></a>
-          <div class="div-block-11">
-            <div class="record-text">Admin</div>
-            <div class="record-text">13/07/19<br></div>
-            <div class="record-text">17/07/19</div>
-          </div>
-        </div>
-        <div class="record"><a href="#" class="w-inline-block"><img src="images/user.png" width="62" alt=""></a>
-          <div class="div-block-11">
-            <div class="record-text">Admin</div>
-            <div class="record-text">13/07/19<br></div>
-            <div class="record-text">17/07/19</div>
-          </div>
+      </div>
+      <div class="record"><a href="#" class="w-inline-block"><img src="images/item.jpg" alt="" class="record-img"></a>
+        <div class="div-block-11">
+          <h3 class="record-text">Item name</h3>
+          <div class="record-text">20/12/1873</div>
+          <div class="record-text">20/23/1873</div>
         </div>
       </div>
     </div>
   </div>
   <div>
     <div class="w-container">
-      <div class="div-block-23">
-        <h3>Delete this piece:</h3><a data-w-id="b1cf41dd-f819-b35b-857e-96a7de5acf7a" href="#" class="w-button">Delete!</a></div>
+      <h1>Items recently taken</h1>
     </div>
-    <div data-w-id="fe319bd1-3745-efe6-f387-46047cd8ec49" class="dial">
-      <h3 class="heading-6">Are you sure you want to delete &#x27;item&#x27;?</h3>
-      <div class="div-block-22"><a data-w-id="b788c32a-aea2-61d2-5d4f-943b66cf3556" href="#" class="button-4 w-button">Cancel</a><a href="#" class="btn-delete w-button">Delete</a></div>
-    </div>
-  </div>
-  
-  
-  <div class="comments-section">
-    <div class="card w-container">
-      <div class="w-form">
-        <form id="email-form-2" name="email-form-2" data-name="Email Form 2" class="form-5"><input type="text" class="text-field-4 w-input" maxlength="256" name="name" data-name="Name" id="name"><input type="submit" value="Submit" data-wait="Please wait..." class="submit-button-6 w-button"></form>
+    <div class="card card-user w-container">
+      <div class="record"><a href="#" class="w-inline-block"><img src="images/item.jpg" alt="" class="record-img"></a>
+        <div class="div-block-11">
+          <h3 class="record-text">Item name</h3>
+          <div class="record-text">20/12/1873</div>
+          <div class="record-text">20/23/1873</div>
+        </div>
       </div>
-      <div class="comments">
-        <div class="comment">
-          <div class="div-block-27">
-            <div class="username">username</div>
-            <div class="text-block-13">23-12-1997</div>
-          </div>
-          <div class="text-block-12">ID: XLMORK</div>
-          <p class="comment-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere.</p>
+      <div class="record"><a href="#" class="w-inline-block"><img src="images/item.jpg" alt="" class="record-img"></a>
+        <div class="div-block-11">
+          <h3 class="record-text">Item name</h3>
+          <div class="record-text">20/12/1873</div>
+          <div class="record-text">20/23/1873</div>
+        </div>
+      </div>
+      <div class="record"><a href="#" class="w-inline-block"><img src="images/item.jpg" alt="" class="record-img"></a>
+        <div class="div-block-11">
+          <h3 class="record-text">Item name</h3>
+          <div class="record-text">20/12/1873</div>
+          <div class="record-text">20/23/1873</div>
         </div>
       </div>
     </div>
   </div>
-
-  
   <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="js/webflow.js" type="text/javascript"></script>
   <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
