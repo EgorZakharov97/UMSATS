@@ -1,20 +1,14 @@
 // REQUIREMENTS
-const express =             require("express"),
-    app =                   express(),
-    mongoose =              require("mongoose"),
-    passport =              require("passport"),
-    bodyParser =            require("body-parser"),
-    localStrategy =         require("passport-local"),
-    passportLocalMongoose = require("passport-local-mongoose"),
-    User                  = require("./models/user"),
-    cameBack              = require("./models/cameBack"),
+const express             = require("express"),
+    app                   = express(),
+    mongoose              = require("mongoose"),
+    bodyParser            = require("body-parser"),
     serveStatic           = require("serve-static"),
     methodOverride        = require("method-override"),
-    ADMIN                 = require("./exports/exports").ADMIN,
     schedule              = require("node-schedule"),
     path                  = require('path'),
     cookieParser          = require('cookie-parser'),
-    GoogleStrategy        = require('passport-google-oauth20').Strategy;
+    passportSetup         = require('./passport-config').setup
 
 // Additional functions
 const logic = require("./serverLogic/stats"),
@@ -26,7 +20,11 @@ const AuthRoutes = require("./routes/auth"),
       ItemRoutes = require("./routes/items"),
       CommentRoutes = require("./routes/comments"),
       ShopperRoutes = require("./routes/shopper"),
-      ServiceRoutes = require("./routes/services");
+      ServiceRoutes = require("./routes/services"),
+      UsersRoutes = require('./routes/users')
+
+// Cookies
+app.use(cookieParser())
 
 // VIEW ENGINE SETUP
 app.set('views', path.join(__dirname, 'views'))
@@ -34,54 +32,19 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
-app.use(express.static(path.join(__dirname, 'public')))
-
-// Cookies
-app.use(cookieParser())
+app.use(express.static(path.join(__dirname, 'public')));
 
 // MONGOOSE
 mongoose.connect("mongodb://localhost/umsats", {useNewUrlParser: true, useUnifiedTopology: true});
 
-// LOCAL STRATEGY PASSPORT CONFIGURATION
-app.use(require("express-session")({
-    secret: "The String used to encode and decode the sessions",
-    resave: false,
-    saveUninitialized: false
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new localStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
-// GOOGLE PASSPORT CONFIGURATION
-passport.use(new GoogleStrategy(
-    {
-        clientID: '639142406836-uldrcmhas2doe4h87j0umjeted02f3r1.apps.googleusercontent.com',
-        clientSecret: 'NdALHxQVzFAqQfLmryY4mo0Z',
-        callbackURL: 'http://127.0.0.1:3000/login/google/callback',
-        scope: ['email' ,'profile'],
-    },
-    // verify function
-    (accessToken, refreshToken, profile, cb) => {
-        return cb(null, profile);
-      },
-))
-
 // SHOW USER MIDDLEWARE
 app.use(function(req, res, next){
     res.locals.user = req.user;
-    res.locals.ADMIN = req.user != undefined && req.user._id == ADMIN;
     next();
 });
 
-// ROUTES CONFIGURATION
-app.use(AuthRoutes);
-app.use("/items", ItemRoutes);
-app.use("/items/:id/comments", CommentRoutes);
-app.use("/itemManager", ShopperRoutes);
-app.use("/main", ServiceRoutes);
-app.use(IndexRoutes);
+// PASSPORT SETUP
+passportSetup(app)
 
 // SET UP FORMATTED DATE OUTPUT
 Date.prototype.showDate = function(){
@@ -96,6 +59,15 @@ Date.prototype.showDate = function(){
 
 // Updating statistics about each item
 schedule.scheduleJob('0 0 0 1 * *', updateStats);
+
+// ROUTES CONFIGURATION
+app.use(AuthRoutes);
+app.use(UsersRoutes);
+app.use("/main", ServiceRoutes);
+app.use("/items", ItemRoutes);
+app.use("/items/:id/comments", CommentRoutes);
+app.use("/itemManager", ShopperRoutes);
+app.use(IndexRoutes);
 
 // LISTENER
 app.listen(3000, function(){
