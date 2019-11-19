@@ -1803,7 +1803,20 @@
   text-decoration: none;
 }
 
+#pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+#pagination a {
+  padding: 0 5px;
+}
+
 @media (max-width: 991px) {
+  #pagination{
+    font-size: 1.5rem;
+  }
   .users-grid {
     -ms-grid-columns: 1fr 1fr;
     grid-template-columns: 1fr 1fr;

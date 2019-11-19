@@ -75,26 +75,46 @@ router.get("/new", isLoggedIn, function(req, res){
     }
 });
 
-// show all items
+// show first 100 items
 router.get("/", isLoggedIn, function(req, res){
-    if(req.user._id == CASHIER){
+    if(req.user._id.toString() == CASHIER){
         res.redirect("/itemManager/cashier");
     } else {
-        Item.find({}, function(err, items){
+        Item.find({}).limit(20).exec(function(err, items){
             if(err){
                 console.log(err);
             } else {
-                User.findById(req.user._id).populate("cart").exec(function(err, user){
+                User.findById(req.user._id).populate("cart").exec(async function(err, user){
                     if(err){
                         console.log(err);
                     } else {
-                        res.render("all-items", {items: items, user: user});
+                        let count = await Item.collection.countDocuments({})
+                        res.render("all-items", {items: items, user: user, numItems: count});
                     }
                 })
             }
         });
     }
 });
+
+// get items from page
+router.get('/page/:num', isLoggedIn, function(req, res){
+    const pageNum = req.params.num
+    Item.find({}).skip(20*(pageNum-1)).limit(20).exec(function(err, items){
+        if(err){
+            console.log(err);
+        } else {
+            User.findById(req.user._id).populate("cart").exec(async function(err, user){
+                if(err){
+                    console.log(err);
+                } else {
+                    let count = await Item.collection.countDocuments({})
+                    res.render("all-items", {items: items, user: user, numItems: count});
+                }
+            })
+        }
+    })
+})
 
 // show complete info
 router.get("/:id", isLoggedIn, function(req, res) {
@@ -152,7 +172,7 @@ router.post("/search", isLoggedIn, function(req, res){
                     if(err){
                         console.log(err)
                     } else {
-                        res.render("show-users", {users: users, user: user});
+                        res.render("show-users", {users: users, user: user, numItems: 0});
                     }
                 })
             }
@@ -175,7 +195,7 @@ router.post("/search", isLoggedIn, function(req, res){
                     if(err){
                         console.log(err);
                     } else {
-                        res.render("all-items", {items: items, user: user});
+                        res.render("all-items", {items: items, user: user, numItems: 0});
                     }
                 })
             }

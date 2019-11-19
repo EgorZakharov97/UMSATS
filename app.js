@@ -81,11 +81,15 @@ Date.prototype.showDate = function(){
             ].join('');
 };
 
+// Updating statistics about each item
+schedule.scheduleJob('0 0 0 1 * *', updateStats);
+
 // LISTENER
 app.listen(3000, function(){
     date = new Date();
     console.log("Server has started at " + date.getHours() + ":" + date.getMinutes());
 });
 
-// Updating statistics about each item
-schedule.scheduleJob('0 0 0 1 * *', updateStats);
+// const spawn = require('./seed').spawn
+
+// spawn()
