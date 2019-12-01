@@ -1,0 +1,43 @@
+<section><h3>Hello, <%= user.username %></h3><div id="items">
+    <% for(let i = 0; i < items.length; i++){ %>
+        <div class="item">
+            <img src="<%= items[i].image %>">
+            <div>
+                <h4><%= items[i].name %></h4>
+                <p><%= items[i].due %></p>
+                <% console.log('I was here') %>
+            </div>
+        </div>
+    <% } %>
+    </div>
+</section>
+
+<style>
+        section{
+            width: 80vw;
+        }
+        section h3 {
+            margin: 0 auto;
+        }
+        .item{
+            display: flex;
+            margin: 10px;
+            background-color: white;
+        }
+        .item img {
+            height: 60px;
+            width: 60px;
+            margin: 10px;
+            border-radius: 100%;
+        }
+        #items{
+            background-color: grey;
+            padding: 10px;
+        }
+        h4{
+            margin: 10px;
+        }
+        p{
+            margin: 10px;
+        }
+</style>

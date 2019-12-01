@@ -104,15 +104,24 @@
   </div>
   <% if(user.permissions.canModifyItems){ %>
   <form class="card w-container" method="post" action="<%= item._id%>/inventory/new">
-    <button class="button-positive">Create new piece</button>
+    <% if(!item.disposable){ %><button class="button-positive">Create new piece</button> <% } %>
     <a class="button-positive" href="<%=item._id%>/edit">Edit item information</a>
   </form>
   <% } %>
 
   <div class="comments-section">
       <div class="card w-container">
+        <% if(item.disposable) { %>
+          <div class="w-form">
+              <!-- POST COMMENT -->
+              <form id="email-form-2" class="form-5" action="/items/<%= item._id %>/comments" method="post">
+                <input type="text" class="text-field-4 w-input" name="text" id="name">
+                <input type="submit" value="Submit" data-wait="Please wait..." class="submit-button-6 w-button">
+              </form>
+          </div>
+        <% } %>
 
-        <div class="comments">
+      <div class="comments">
           <% for(let i = comments.length-1; i >= 0; i--){ %>
             <% let comment = comments[i] %>
           <!-- COMMENT -->
@@ -121,8 +130,15 @@
               <div class="username"><%= comment.author.username %></div>
               <div class="text-block-13"><%= comment.date.showDate() %></div>
             </div>
-            <div class="text-block-12">ID:<%= comment.pieceID %></div>
+            <% if(comment.pieceID){ %>
+              <div class="text-block-12">ID:<%= comment.pieceID %></div>
+            <% } %>
             <p class="comment-text"><%= comment.text %></p>
+            <% if(item.disposable && (user.permissions.canModifyItems || comment.author.id.toString() == user._id)){ %>
+          <form <%if(item.disposable){ %> action="/items/<%= item._id %>/comments/<%= comment._id %>?_method=delete" <%}%> method="post">
+            <button>Delete</button>
+          </form>
+          <%}%>
           </div>
           <% } %>
         </div>

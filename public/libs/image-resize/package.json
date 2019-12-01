@@ -1,0 +1,69 @@
+{
+  "_from": "image-resize",
+  "_id": "image-resize@1.0.10",
+  "_inBundle": false,
+  "_integrity": "sha512-r+oHkutqfYXo4dt+8OmDEDq48wxaC8Nny3FS8GBmKYZGLhkCZ/wh88+bTifrNFkOEUp0Jqpy30bwbZpUJMRi6w==",
+  "_location": "/image-resize",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "image-resize",
+    "name": "image-resize",
+    "escapedName": "image-resize",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/image-resize/-/image-resize-1.0.10.tgz",
+  "_shasum": "782365cb7756cd6186ede4c6464e5984d8b8b310",
+  "_spec": "image-resize",
+  "_where": "C:\\Progects\\UMSATS",
+  "author": {
+    "name": "redgoose",
+    "email": "scripter@me.com",
+    "url": "http://redgoose.me"
+  },
+  "bugs": {
+    "url": "https://github.com/RedgooseDev/image-resize/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {},
+  "deprecated": false,
+  "description": "Image resizer for javascript",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-es2015": "^6.24.1",
+    "gulp": "^3.9.1",
+    "rollup": "^0.50.0",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-node-globals": "^1.1.0",
+    "rollup-plugin-uglify": "^2.0.1"
+  },
+  "homepage": "https://github.com/RedgooseDev/image-resize#readme",
+  "keywords": [
+    "image",
+    "resize",
+    "resizer",
+    "canvas",
+    "javascript",
+    "js"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "image-resize",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RedgooseDev/image-resize.git"
+  },
+  "scripts": {
+    "publish": "npm publish",
+    "version-patch": "npm version patch"
+  },
+  "version": "1.0.10"
+}

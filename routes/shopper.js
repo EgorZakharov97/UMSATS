@@ -5,8 +5,9 @@ const Item = require("../models/item");
 const Record = require("../models/record");
 const CameBack = require("../models/cameBack");
 const Piece = require("../models/piece");
-const passport = require("passport");
-const flash = require('express-flash-notification');
+const ejs = require("../node_modules/ejs");
+const fs = require('fs')
+const transporter = require('../exports/exports').getEmailTransporter()
 const myFunc = require('../exports/exports'),
     isLoggedIn = myFunc.isLoggedIn,
     isLoggedCashier = myFunc.isLoggedCashier;
@@ -132,6 +133,31 @@ router.post('/deleteFromCart', isLoggedIn, function(req, res){
 // take an item
 router.post('/take', isLoggedIn, async function(req, res){
 
+    let sendEmail = function(info){
+        let emailOptions = {
+            from: process.env.EMAIL,
+            to: info.user.email,
+            subject: 'UMSATS Receipt',
+            html: "<h2>Hi, " + info.user.username + "</h2><p>You have recently taken:</p>"
+        }
+
+        for(let i = 0; i < info.items.length; i++){
+            if(info.items[i].due){
+                emailOptions.html += "<p>" + info.items[i].name + " is due " + info.items[i].due.showDate() + "</p>" 
+            } else {
+                emailOptions.html += "<p>" + info.items[i].name + " (No need to return)</p>"
+            }
+        }
+
+        transporter.sendMail(emailOptions, function(err, info){
+            if(err){
+                console.log(err)
+            } else {
+                console.log('Confirmation email sent')
+            }
+        })
+    }
+
     let takeDisposable = async function(user, record){
          let item = record.item;
          record.dateTaken = new Date();
@@ -150,7 +176,7 @@ router.post('/take', isLoggedIn, async function(req, res){
          user.numTaken++;
     };
 
-    let takeReusable = async function(record, dateReturn){
+    let takeReusable = async function(record, dateReturn, emailItem){
         let item = record.item;
         let piece = record.piece;
         let now = new Date();
@@ -163,6 +189,7 @@ router.post('/take', isLoggedIn, async function(req, res){
             record.dateTaken = now;
             record.returned = false;
             record.dateReturn = new Date(dateReturn);
+            emailItem.due = new Date(dateReturn)
             record.save();
 
             item.records.push(record);
@@ -171,7 +198,6 @@ router.post('/take', isLoggedIn, async function(req, res){
             piece.save();
             item.statistics.takenThisMonth++;
             item.quantityAvailable--;
-
             if(item.quantityAvailable <= 0){
                 item.available = false;
             }
@@ -189,20 +215,30 @@ router.post('/take', isLoggedIn, async function(req, res){
     let user = await User.findById(req.user._id).populate('cart');
     let cart = user.cart;
     let dates = req.body.dateReturn;
+    let emailData = {
+        user: {},
+        items: []
+    }
 
     for(let i = 0; i < cart.length; i++){
         let record = await Record.findById(cart[i]._id).populate('piece').populate('item');
-
+        emailData.items.push({
+            name: record.itemInfo.name,
+            image: record.itemInfo.image,
+        })
         if(record.itemInfo.disposable){
             await takeDisposable(user, record);
             console.log(user.username + " took " + record.itemInfo.quantityTaken + " of " + record.itemInfo.name);
         } else {
             let dateReturn = dates[record.itemInfo.shortID];
-            await takeReusable(record, dateReturn);
+            await takeReusable(record, dateReturn, emailData.items[i]);
         }
     }
     user.cart = [];
     user.save();
+    emailData.user.username = user.username
+    emailData.user.email = user.email
+    sendEmail(emailData)
     res.redirect('/items');
 });
 
@@ -212,28 +248,35 @@ router.post("/return/:id", isLoggedCashier, async function(req, res) {
     let item = piece.item;
     let record = piece.records[piece.records.length-1];
     let now = new Date();
-
     let user = await User.findById(record.user.id);
+
+    let emailOptions = {
+        from: process.env.EMAIL,
+        to: user.email,
+        subject: 'UMSATS Return Confirmation',
+        html: '<p>Thank you for returning ' + piece.item.name + '</p>'
+    }
 
     if(record.dateReturn < now){
         user.numLateReturns++;
+        emailOptions.html += '<p>You was suppose to return this item ' + record.dateReturn.showDate() + '. Today is ' + now.showDate() + '</p>'
         console.log("Late return registered for " + user.username);
     }
     user.numItemsOnHand--;
-    user.save();
 
     record.dateReturn = now;
     record.returned = true;
-    record.save();
 
     piece.available = true;
-    piece.save();
     item.quantityAvailable++;
 
     if(item.available == false){
         item.available = true;
         CameBack.find({}, function(err, found){
-            let array = found[0].items;
+            if(found == undefined || found.items == undefined){
+                CameBack.create({items: [item]})
+            } else {
+                let array = found[0].items;
             if(found[0].size >= 5){
                 array.pop();
             } else {
@@ -241,13 +284,26 @@ router.post("/return/:id", isLoggedCashier, async function(req, res) {
             }
             array.unshift(item);
             found[0].save();
+            }
         })
     }
 
     item.markModified('storage');
+
     item.save();
+    record.save();
+    piece.save();
+    user.save();
 
     console.log(user.username + " has returned " + item.name + " (" + record.itemInfo.shortID + ")");
+
+    transporter.sendMail(emailOptions, function(err, info){
+        if(err){
+            console.log(err)
+        } else {
+            console.log(info)
+        }
+    })
 
     res.redirect("/itemManager/cashier");
 });

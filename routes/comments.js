@@ -11,7 +11,7 @@ const myFunc = require('../exports/exports'),
 // COMMENTS ROUTES
 //----------------
 
-// post new comment
+// post new comment for piece
 router.post('/items/:item_id/inventory/:piece_id/comments', isLoggedIn, function(req, res){
     Piece.findById(req.params.piece_id, function(err, piece){
         if(err){
@@ -38,6 +38,52 @@ router.post('/items/:item_id/inventory/:piece_id/comments', isLoggedIn, function
             })
         }
     })
+})
+
+// post new comment for a disposable item
+router.post('/items/:id/comments', isLoggedIn, function(req, res){
+    Item.findById(req.params.id, function(err, item){
+        if(err){
+            console.log(err)
+        } else {
+            Comment.create({}, function(err, comment){
+                if(err){
+                    console.log(err)
+                } else {
+                    comment.text = req.body.text
+                    comment.author.id = req.user._id
+                    comment.author.username = req.user.username
+                    comment.date = new Date
+                    comment.item = item._id
+                    comment.save()
+                    item.comments.push(comment)
+                    item.save()
+
+                    console.log("User " + req.user.username + ' just posted a comment on ' + item.name)
+                    res.redirect('/items/' + item._id)
+                }
+            })
+        }
+    })
+})
+
+// delete a comment of a disposable item
+router.delete('/items/:id/comments/:comment_id', isLoggedIn, async function(req, res){
+    let comment = await Comment.findById(req.params.comment_id)
+    User.findById(req.user._id, function(err, user){
+        if(err){
+            console.log(err)
+        } else {
+            if(user.permissions.canModifyItems){
+                comment.remove()
+                console.log(req.user.username + ' has deleted a comment')
+            } else if (comment.author.id.toString() == user._id){
+                comment.remove()
+                console.log(req.user.username + ' has deleted a comment')
+            }
+        }
+    })
+    res.redirect('/items/' + req.params.id)
 })
 
 // delete a comment

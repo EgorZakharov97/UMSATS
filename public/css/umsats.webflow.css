@@ -703,13 +703,16 @@
 }
 
 .text-block-6 {
+  margin: 20px 0;
   font-family: 'Changa One', Impact, sans-serif;
-  font-size: 30px;
+  font-size: 3rem;
   font-weight: 400;
 }
 
 .text-block-7 {
   font-weight: 700;
+  margin: 20px 0;
+  font-size: 1.3rem;
 }
 
 .div-block-9 {
@@ -1238,7 +1241,24 @@
 }
 
 .item {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
   padding: 10px;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
   border-radius: 5px;
   background-color: #fff;
   box-shadow: 0 0 9px -2px #000;

@@ -7,7 +7,10 @@ const express = require("express"),
     Piece = require("../models/piece"),
     fs = require('fs'),
     nodemailer = require("nodemailer"),
-    flash = require('express-flash-notification');
+    flash = require('express-flash-notification'),
+
+
+const transporter = require('../exports/exports').getEmailTransporter()
 
 // storage
 const multer = require("multer"),
@@ -44,23 +47,23 @@ const myFunc = require('../exports/exports'),
     CASHIER = myFunc.CASHIER;
 
 
-var transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: EMAIL,
-        pass: EMAIL_PASS
-    },
-    tls: {
-        rejectUnauthorized: false
-    }
+// var transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth: {
+//         user: EMAIL,
+//         pass: EMAIL_PASS
+//     },
+//     tls: {
+//         rejectUnauthorized: false
+//     }
 
-});
+// });
 
 //-------------
 // ITEMS ROUTES
 //-------------
 
-// show create new item for admin
+// show create new item
 router.get("/new", isLoggedIn, function(req, res){
     if(req.user.permissions.canModifyItems){
         User.findById(req.user._id).populate("cart").exec(function(err, user){
@@ -124,7 +127,7 @@ router.get("/:id", isLoggedIn, function(req, res) {
         .populate("storage")
         .exec(function(err, item){
         if(err){
-            res.redirect("/items");
+            console.log(err)
         } else {
             if(item != undefined){
                 // increment the number of visits
@@ -147,7 +150,6 @@ router.get("/:id", isLoggedIn, function(req, res) {
             } else {
                 res.redirect("/items");
             }
-
         }
     });
 });
@@ -210,8 +212,18 @@ router.post("/", isLoggedIn, upload.single('image'), function(req, res){
             if(err){
                 console.log(err);
             } else {
+
                 // initialising all the fields
-                newItem.image.path = req.file.path.slice(req.file.path.indexOf('\\'), req.file.path.length)
+                let itemPath = req.file.path.slice(req.file.path.indexOf('\\'), req.file.path.length)
+
+                // // resizing the item
+                // let resizeImage = new ResizeImage({
+                //     format: itemPath.split('.')[1],
+                //     width: 640,
+                //     height: 560
+                // })
+
+                newItem.image.path = itemPath
                 newItem.image.contentType = req.file.mimeType;
     
                 // initialising storage fields
@@ -248,7 +260,6 @@ router.post("/", isLoggedIn, upload.single('image'), function(req, res){
         res.render('404')
     }
 });
-
 
 //--------------
 // PIECES ROUTES
@@ -353,7 +364,7 @@ router.post("/:id/inventory/new", isLoggedIn, function(req, res){
         Item.findById(req.params.id, function(err, item){
             if(err){
                 console.log(err)
-            } else {
+            } else if(!item.disposable) {
                 Piece.create(
                     {
                         item: item,
@@ -371,6 +382,8 @@ router.post("/:id/inventory/new", isLoggedIn, function(req, res){
                         }
                     }
                 )
+            } else {
+                res.send("This is a disposable item, you cannot create pieces of it!")
             }
         })
     } else {
@@ -403,38 +416,5 @@ router.delete("/:id/inventory/:piece/delete", isLoggedIn, function(req, res){
         res.redirect('404')
     }
 });
-
-function sendEmail(param, record){
-    var subject;
-    var text;
-    switch (param) {
-        case 'take':
-           subject = 'You\'e taken ' + record.item.name + 'from UMSATS';
-           text = 'This is the automatically generated email send as a confirmation that you, ' + record.user.username + ' have taken'
-                + record.item.name + 'form UMSATS storage.' + '\nThis item is expected to be returned ' + record.dateReturn
-                + '. Don\'t forget to bring it back!';
-           break;
-        default:
-            console.log("unknown parameter. Could not send email");
-            break;
-    }
-
-    if(subject != null && text != null){
-        var mailOptions = {
-            from: EMAIL,
-            to: record.user.email,
-            subject: subject,
-            text: text
-        }
-    };
-
-    transporter.sendMail(mailOptions, function(err, info){
-        if(err){
-            console.log(err);
-        } else {
-            console.log('Email confirmation was sent to: ' + record.user.username);
-        }
-    });
-}
 
 module.exports = router;

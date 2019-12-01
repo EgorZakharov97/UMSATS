@@ -29,7 +29,7 @@
         <% for(let i = 0; i < users.length; i++){ %>
           <% let displayUser = users[i] %>
           <div id="w-node-115d623ad352-b7724f74" class="user-cols w-row">
-            <div class="w-col w-col-5"><a href="/user/<%= displayUser._id %>" class="w-inline-block"><img src="../../images/user.png" alt=""></a></div>
+            <div class="w-col w-col-5"><a href="/user/<%= displayUser._id %>" class="w-inline-block"><img src="<%= displayUser.picture %>" alt=""></a></div>
             <div class="w-col w-col-7">
               <a href="/user/<%= displayUser._id %>" class="link-block-2 w-inline-block">
                 <h4 class="heading-9"><%= displayUser.username %></h4>

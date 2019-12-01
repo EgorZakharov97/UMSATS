@@ -1,23 +1,22 @@
+// ENVIRONMENT
+require('dotenv').config()
+
 // REQUIREMENTS
-const express =             require("express"),
-    app =                   express(),
-    mongoose =              require("mongoose"),
-    passport =              require("passport"),
-    bodyParser =            require("body-parser"),
-    localStrategy =         require("passport-local"),
-    passportLocalMongoose = require("passport-local-mongoose"),
-    User                  = require("./models/user"),
-    cameBack              = require("./models/cameBack"),
+const express             = require("express"),
+    app                   = express(),
+    mongoose              = require("mongoose"),
+    bodyParser            = require("body-parser"),
     serveStatic           = require("serve-static"),
     methodOverride        = require("method-override"),
-    ADMIN                 = require("./exports/exports").ADMIN,
     schedule              = require("node-schedule"),
     path                  = require('path'),
-    cookieParser               = require('cookie-parser');
+    cookieParser          = require('cookie-parser'),
+    passportSetup         = require('./passport-config').setup
+    spawn                 = require('./exports/exports').spawn
 
 // Additional functions
 const logic = require("./serverLogic/stats"),
-      updateStats = logic.updateStats;
+      updateStats = logic.updateStats
 
 // ROUTES
 const AuthRoutes = require("./routes/auth"),
@@ -25,7 +24,11 @@ const AuthRoutes = require("./routes/auth"),
       ItemRoutes = require("./routes/items"),
       CommentRoutes = require("./routes/comments"),
       ShopperRoutes = require("./routes/shopper"),
-      ServiceRoutes = require("./routes/services");
+      ServiceRoutes = require("./routes/services"),
+      UsersRoutes = require('./routes/users')
+
+// Cookies
+app.use(cookieParser())
 
 // VIEW ENGINE SETUP
 app.set('views', path.join(__dirname, 'views'))
@@ -33,34 +36,19 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
-app.use(express.static(path.join(__dirname, 'public')))
-
-// Cookies
-app.use(cookieParser())
-
+app.use(express.static(path.join(__dirname, 'public')));
 
 // MONGOOSE
-mongoose.connect("mongodb://localhost/umsats", {useNewUrlParser: true});
-
-// PASSPORT CONFIGURATION
-app.use(require("express-session")({
-    // can be anything
-    secret: "The String used to encode and decode the sessions",
-    resave: false,
-    saveUninitialized: false
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new localStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+mongoose.connect("mongodb://localhost/umsats", {useNewUrlParser: true, useUnifiedTopology: true});
 
 // SHOW USER MIDDLEWARE
 app.use(function(req, res, next){
     res.locals.user = req.user;
-    res.locals.ADMIN = req.user != undefined && req.user._id == ADMIN;
     next();
 });
+
+// PASSPORT STRATEGYSETUP
+passportSetup(app)
 
 // ROUTES CONFIGURATION
 app.use(AuthRoutes);
@@ -68,6 +56,7 @@ app.use("/items", ItemRoutes);
 app.use(CommentRoutes);
 app.use("/itemManager", ShopperRoutes);
 app.use("/main", ServiceRoutes);
+app.use(UsersRoutes);
 app.use(IndexRoutes);
 
 // SET UP FORMATTED DATE OUTPUT
@@ -84,12 +73,8 @@ Date.prototype.showDate = function(){
 // Updating statistics about each item
 schedule.scheduleJob('0 0 0 1 * *', updateStats);
 
+let date = new Date()
 // LISTENER
-app.listen(3000, function(){
-    date = new Date();
+app.listen(process.env.PORT, function(){
     console.log("Server has started at " + date.getHours() + ":" + date.getMinutes());
 });
-
-// const spawn = require('./seed').spawn
-
-// spawn()

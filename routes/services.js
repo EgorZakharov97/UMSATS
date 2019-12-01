@@ -6,7 +6,6 @@ const User = require('../models/user')
 const myFunc = require('../exports/exports'),
     isLoggedIn = myFunc.isLoggedIn,
     isLoggedAdmin = myFunc.isLoggedAdmin,
-    ADMIN = myFunc.ADMIN,
     CASHIER = myFunc.CASHIER;
 
 // Show the main page
