@@ -8,6 +8,7 @@ const express = require("express"),
     fs = require('fs'),
     nodemailer = require("nodemailer"),
     flash = require('express-flash-notification'),
+    sharp = require('sharp')
 
 
 const transporter = require('../exports/exports').getEmailTransporter()
@@ -216,12 +217,13 @@ router.post("/", isLoggedIn, upload.single('image'), function(req, res){
                 // initialising all the fields
                 let itemPath = req.file.path.slice(req.file.path.indexOf('\\'), req.file.path.length)
 
-                // // resizing the item
-                // let resizeImage = new ResizeImage({
-                //     format: itemPath.split('.')[1],
-                //     width: 640,
-                //     height: 560
-                // })
+                // resizing the item
+                file = fs.openSync(itemPath)
+                sharp(file).resize(100, 100).toFile('newItem.jpeg', (err, info) => {
+                    if(err){
+                        console.log(err)
+                    }
+                })
 
                 newItem.image.path = itemPath
                 newItem.image.contentType = req.file.mimeType;
