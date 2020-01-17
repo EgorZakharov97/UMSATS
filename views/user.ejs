@@ -41,7 +41,7 @@
                   <h3>Permissions</h3>
   
   
-                  <form action="/user/permissions/<%=user._id%>" method="post" id="wf-form-permissions-form" name="wf-form-permissions-form" data-name="permissions form">
+                  <form action="/user/permissions/<%=display._id%>" method="post" id="wf-form-permissions-form" name="wf-form-permissions-form" data-name="permissions form">
                     
                     <label class="w-checkbox">
                       <input type="checkbox" <%if(display.permissions.canMakePosts){%>checked<%}%> id="CanMakePosts" name="canMakePosts" class="w-checkbox-input">
