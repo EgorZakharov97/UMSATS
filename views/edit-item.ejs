@@ -48,7 +48,7 @@
         </form>
       </div>
       <div>
-        <form action="/<%= item._id %>?_method=DELETE">
+        <form action="/items/<%= item._id %>?_method=DELETE" method="POST">
           <button class="btn-delete">Delete this item</button>
         </form>
       </div>

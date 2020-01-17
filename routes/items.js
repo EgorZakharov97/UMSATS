@@ -214,12 +214,12 @@ router.post("/", isLoggedIn, upload.single('image'), function(req, res){
                 let itemPath = req.file.path.slice(req.file.path.indexOf('\\'), req.file.path.length)
 
                 // resizing the item
-                file = fs.openSync(itemPath)
-                sharp(file).resize(100, 100).toFile('newItem.jpeg', (err, info) => {
-                    if(err){
-                        console.log(err)
-                    }
-                })
+                // file = fs.openSync(itemPath)
+                // sharp(file).resize(100, 100).toFile('newItem.jpeg', (err, info) => {
+                //     if(err){
+                //         console.log(err)
+                //     }
+                // })
 
                 newItem.image.path = itemPath
                 newItem.image.contentType = req.file.mimeType;

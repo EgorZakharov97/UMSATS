@@ -75,6 +75,6 @@ schedule.scheduleJob('0 0 0 1 * *', updateStats);
 
 let date = new Date()
 // LISTENER
-app.listen(process.env.PORT, function(){
+app.listen(3000, function(){
     console.log("Server has started at " + date.getHours() + ":" + date.getMinutes());
 });
