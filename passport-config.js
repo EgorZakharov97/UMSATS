@@ -100,7 +100,7 @@ module.exports = {
             {
                 clientID: '639142406836-uldrcmhas2doe4h87j0umjeted02f3r1.apps.googleusercontent.com',
                 clientSecret: 'NdALHxQVzFAqQfLmryY4mo0Z',
-                callbackURL: 'http://127.0.0.1:3000/login/google/callback',
+                callbackURL: 'http://localhost:3000/login/google/callback',
                 scope: ['email', 'profile'],
             },
             // verify function

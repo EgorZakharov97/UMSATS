@@ -39,7 +39,7 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // MONGOOSE
-mongoose.connect("mongodb://localhost/umsats", {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect("mongodb+srv://admin:admin@emailsaver-xwdou.gcp.mongodb.net/test?retryWrites=true&w=majority", {useNewUrlParser: true, useUnifiedTopology: true});
 
 // SHOW USER MIDDLEWARE
 app.use(function(req, res, next){

@@ -43,9 +43,9 @@ const myFunc = require('../exports/exports'),
     isLoggedIn = myFunc.isLoggedIn,
     isLoggedAdmin = myFunc.isLoggedAdmin,
     createShortID = myFunc.createShortID,
-    EMAIL = myFunc.EMAIL,
-    EMAIL_PASS = myFunc.EMAIL_PASS,
-    CASHIER = myFunc.CASHIER;
+    EMAIL = process.env.EMAIL,
+    EMAIL_PASS = process.env.EMAIL_PASS,
+    CASHIER = process.env.CASHIER;
 
 
 // var transporter = nodemailer.createTransport({
@@ -81,24 +81,20 @@ router.get("/new", isLoggedIn, function(req, res){
 
 // show first 100 items
 router.get("/", isLoggedIn, function(req, res){
-    if(req.user._id.toString() == CASHIER){
-        res.redirect("/itemManager/cashier");
-    } else {
-        Item.find({}).limit(20).exec(function(err, items){
-            if(err){
-                console.log(err);
-            } else {
-                User.findById(req.user._id).populate("cart").exec(async function(err, user){
-                    if(err){
-                        console.log(err);
-                    } else {
-                        let count = await Item.collection.countDocuments({})
-                        res.render("all-items", {items: items, user: user, numItems: count});
-                    }
-                })
-            }
-        });
-    }
+    Item.find({}).limit(20).exec(function(err, items){
+        if(err){
+            console.log(err);
+        } else {
+            User.findById(req.user._id).populate("cart").exec(async function(err, user){
+                if(err){
+                    console.log(err);
+                } else {
+                    let count = await Item.collection.countDocuments({})
+                    res.render("all-items", {items: items, user: user, numItems: count});
+                }
+            })
+        }
+    });
 });
 
 // get items from page
@@ -252,7 +248,7 @@ router.post("/", isLoggedIn, upload.single('image'), function(req, res){
                         newItem.storage.push(newPiece);
                     }
                 }
-    
+
                 newItem.save();
                 console.log("Item created: " + newItem.name);
             }
