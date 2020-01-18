@@ -11,6 +11,7 @@
   <link href="../css/normalize.css" rel="stylesheet" type="text/css">
   <link href="../css/webflow.css" rel="stylesheet" type="text/css">
   <link href="../css/umsats.webflow.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="../css/myCustomStyles.css" type="text/css">
   <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
   <script type="text/javascript">WebFont.load({  google: {    families: ["Merriweather:300,300italic,400,400italic,700,700italic,900,900italic","Exo:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic","Changa One:400,400italic"]  }});</script>
   <!-- [if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" type="text/javascript"></script><![endif] -->
@@ -21,95 +22,111 @@
 <body>
   
   <% include partials/navbar %>
+
+    <!-- User info -->
   <div class="section-5">
-      <div class="card _2 w-container">
-        <div class="columns-2 w-row">
-          <div class="w-col <%if(user.permissions.canModifyPermissions){%> w-col-5 <%} else {%> w-col-6 <%} %>">
-            <div class="div-block-12"><img src="../images/user.png" width="181" alt="" class="image-8"></div>
-          </div>
-          <div class="column-6 w-col <%if(user.permissions.canModifyPermissions){%> w-col-5 <%} else {%> w-col-6 <%} %>">
-            <div class="div-block-13">
-              <h1 class="heading-2"><%= display.username %></h1>
-              <div class="text-block-10"><%= display.email %></div>
-              <div><strong>Number of items taken:</strong> <%= display.numTaken %></div>
-              <div><strong>Number of items on hand:</strong> <%= display.numItemsOnHand %></div>
-              <div><strong>Number of items with late return:</strong> <%= display.numLateReturns %></div>
-            </div><a href="/logout" class="btn-delete w-button">Logout</a></div>
-            <% if(user.permissions.canModifyPermissions){ %>
-              <div class="w-col w-col-2">
-                <div class="w-form">
-                  <h3>Permissions</h3>
-  
-  
-                  <form action="/user/permissions/<%=display._id%>" method="post" id="wf-form-permissions-form" name="wf-form-permissions-form" data-name="permissions form">
-                    
-                    <label class="w-checkbox">
-                      <input type="checkbox" <%if(display.permissions.canMakePosts){%>checked<%}%> id="CanMakePosts" name="canMakePosts" class="w-checkbox-input">
-                      <span for="CanMakePosts" class="w-form-label">Can make posts</span>
-                    </label>
-  
-                    <label class="w-checkbox">
-                      <input type="checkbox" <%if(display.permissions.canModifyItems){%>checked<%}%> id="CanMakePosts-3" name="canModifyItems" class="w-checkbox-input">
-                      <span for="CanMakePosts-3" class="w-form-label">Can modify items</span>
-                    </label>
-  
-                    <label class="w-checkbox">
-                      <input type="checkbox" <%if(display.permissions.canModifyPermissions){%>checked<%}%> id="CanMakePosts-2" name="canModifyPermissions" class="w-checkbox-input">
-                      <span for="CanMakePosts-2" class="w-form-label">Can modify permissions</span>
-                    </label>
-  
-                    <input type="submit" value="Update" data-wait="Please wait..." class="w-button">
-  
-                  </form>
-  
-                </div>
-              </div>
-            <% } %>
+    <div class="card _2 w-container">
+      <div class="columns-2 w-row">
+        <div class="w-col <%if(user.permissions.canModifyPermissions){%> w-col-5 <%} else {%> w-col-6 <%} %>">
+          <div class="div-block-12"><img style="border-radius: 50%;" src="<%= display.picture %>" width="181" alt="" class="image-8"></div>
         </div>
+        <div class="column-6 w-col <%if(user.permissions.canModifyPermissions){%> w-col-4 <%} else {%> w-col-6 <%} %>">
+          <div class="div-block-13">
+            <h1 class="heading-2"><%= display.username %></h1>
+            <div class="text-block-10"><%= display.email %></div>
+            <div><strong>Number of items taken:</strong> <%= display.numTaken %></div>
+            <div><strong>Number of items on hand:</strong> <%= display.numItemsOnHand %></div>
+            <div><strong>Number of items with late return:</strong> <%= display.numLateReturns %></div>
+          </div></div>
+          <% if(user.permissions.canModifyPermissions){ %>
+            <div class="w-col w-col-3">
+              <div class="w-form">
+                <h3>Permissions</h3>
+
+
+                <form class="form-6" action="/user/permissions/<%=user._id%>" method="post" id="wf-form-permissions-form" name="wf-form-permissions-form" data-name="permissions form">
+                  
+                  <label class="w-checkbox">
+                    <input type="checkbox" <%if(display.permissions.canMakePosts){%>checked<%}%> id="CanMakePosts" name="canMakePosts" class="w-checkbox-input">
+                    <span for="CanMakePosts" class="w-form-label">Can make posts</span>
+                  </label>
+
+                  <label class="w-checkbox">
+                    <input type="checkbox" <%if(display.permissions.canModifyItems){%>checked<%}%> id="CanMakePosts-3" name="canModifyItems" class="w-checkbox-input">
+                    <span for="CanMakePosts-3" class="w-form-label">Can modify items</span>
+                  </label>
+
+                  <label class="w-checkbox">
+                    <input type="checkbox" <%if(display.permissions.canModifyPermissions){%>checked<%}%> id="CanMakePosts-2" name="canModifyPermissions" class="w-checkbox-input">
+                    <span for="CanMakePosts-2" class="w-form-label">Can modify permissions</span>
+                  </label>
+
+                  <input type="submit" value="Update" data-wait="Please wait..." class="w-button">
+
+                </form>
+
+              </div>
+            </div>
+          <% } %>
       </div>
     </div>
-
-
+  </div>
   <div>
-      <% if(display.records.length > 0) { %>
+
+    <!-- Items on hand -->
     <div class="w-container">
-      <h1>Items on hand</h1>
+      <h2 class="item-section-heading">Items on hand</h2>
     </div>
     <div class="card card-user w-container">
+      <% if(display.records.length > 0) { %>
         <% for(let i = display.records.length-1; i >= 0; i--) { %>
           <% let record = display.records[i] %>
           <% if((!record.itemInfo.disposable) && (!record.returned)) { %>
-          <div class="record"><a href="/items/<%=record.item%>/inventory/<%= record.piece %>" class="w-inline-block"><img src="./../../<%= record.itemInfo.image %>" alt="" class="record-img"></a>
-            <div class="div-block-11">
-              <h3 class="record-text"><%= record.itemInfo.name %></h3>
-              <div class="record-text">Taken: <%= record.dateTaken.showDate() %></div>
-              <div class="record-text">Due date: <%= record.dateReturn.showDate() %></div>
+          <a href="/items/<%=record.item%>/inventory/<%= record.piece %>" class="piece-card w-inline-block">
+            <div class="piece-card">
+              <div class="piece-header"><img src="./../../<%= record.itemInfo.image %>" alt="" class="image-7">
+                <div>
+                  <div class="piece-txt"><%= record.itemInfo.name %></div>
+                  <div class="div-block-7"></div>
+                  <div class="record-text user">Taken: <%= record.dateTaken.showDate() %></div>
+                  <div class="record-text user">Due date: <%= record.dateReturn.showDate() %></div>
+                </div>
+              </div>
             </div>
-          </div>
+          </a>
           <% } else { break } %>
         <% } %>
+      <% } %>
     </div>
   </div>
-  <div>
-    <div class="w-container">
-      <h1>Items recently taken</h1>
+
+
+    <!-- Items recently taken -->
+    <div>
+      <div class="w-container">
+        <h2 class="item-section-heading">Items recently taken</h2>
+      </div>
+      <div class="card card-user w-container">
+          <% for(let i = 0; i < display.records.length; i++) { %>
+            <% let record = display.records[i] %>
+            <% if(record.returned) { %>
+              <a href="/items/<%=record.item%>/inventory/<%= record.piece %>" class="piece-card w-inline-block">
+                <div class="piece-card">
+                  <div class="piece-header"><img src="./../../<%= record.itemInfo.image %>" alt="" class="image-7">
+                    <div>
+                      <div class="piece-txt"><%= record.itemInfo.name %></div>
+                      <div class="div-block-7"></div>
+                      <div class="record-text user">Taken: <%= record.dateTaken.showDate() %></div>
+                      <div class="record-text user">Due date: <%= record.dateReturn.showDate() %></div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            <% }} %>
+        
+      </div>
     </div>
-    <div class="card card-user w-container">
-        <% for(let i = 0; i < display.records.length; i++) { %>
-          <% let record = display.records[i] %>
-          <% if(record.returned) { %>
-          <div class="record"><a href="/items/<%= record.item %>/inventory/<%= record.piece %>" class="w-inline-block"><img src="./../../<%= record.itemInfo.image %>" alt="" class="record-img"></a>
-            <div class="div-block-11">
-              <h3 class="record-text"><%= record.itemInfo.name %></h3>
-              <div class="record-text">Taken: <%= record.dateTaken.showDate() %></div>
-              <div class="record-text">Retrn: <%= record.dateReturn.showDate() %></div>
-          </div>
-        </div>
-          <% }} %>
-      
-    </div>
-  </div>
-  <% } %>
+
   <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="../js/webflow.js" type="text/javascript"></script>
   <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->

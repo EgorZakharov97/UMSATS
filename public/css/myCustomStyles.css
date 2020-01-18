@@ -13,11 +13,11 @@
     text-decoration: none;
 }
 
-.btn-delete {
+/* .btn-delete {
     background-color: red;
     color: white;
     padding: 10px;
-}
+} */
 
 .add-to-cart {
     margin-bottom: 20px;
@@ -28,4 +28,8 @@
     color: white;
     border-radius: 3px;
     padding: 4px;
+}
+
+.image-8 {
+    border-radius: 50%;
 }

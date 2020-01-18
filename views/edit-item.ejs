@@ -28,7 +28,7 @@
       <div class="w-form">
         <form id="email-form" action="/items/<%= item._id %>?_method=PUT" method="POST">
           <label for="item[name]">Edit Name</label>
-          <input required type="text" class="w-input" maxlength="256" name="name" data-name="Name" id="name" value="<%=item.name%>">
+          <input required type="text" class="w-input" maxlength="256" name="item[name]" data-name="Name" id="name" value="<%=item.name%>">
           <label for="email">Edit Category</label>
           <select id="category" name="item[category]" class="w-select">
             <option <% if(item.category == "Category1"){ %> selected <% } %> value="Category1">Category1</option>

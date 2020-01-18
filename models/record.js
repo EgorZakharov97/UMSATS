@@ -8,7 +8,8 @@ const RecordSchema = new mongoose.Schema({
             ref: "User"
         },
         username: String,
-        email: String
+        email: String,
+        picture: String
     },
     itemInfo: {
         name: String,

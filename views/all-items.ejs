@@ -23,32 +23,32 @@
     <% include partials/navbar %>
     <% include partials/searchBar %>
 
-  <div>
-    <div class="card items-card w-container">
-      <div class="w-layout-grid grid-2">
-
+    <div>
+      <div class="card items-card w-container">
+        <div class="w-layout-grid grid-2">
 
           <% for(let i = 0; i < items.length; i++) { %>
-            <% let item = items[i] %>
-  
-            <div id="w-node-18aa80099ea4-8dfbd023" class="item">
-              <div class="columns-3 w-row" <% if(!item.available){ %> style="background-color: #fc6f03" <% } %> >
-                <div class="w-col w-col-6"><img src="../../../<%= item.image.path %>" alt="" class="image-9"></div>
-                <div class="column-7 w-col w-col-6">
-                  <h4 class="item-header"><%= item.name %></h4>
-                  <div class="item-category"><%= item.category %></div>
-                </div>
-              </div>
+          <% let item = items[i] %>
+
+          
+          <div id="w-node-18aa80099ea4-8dfbd023" class="item" <% if(!item.available){ %> style="background-color: #fc6f03" <% } %>>
+            <a href="/items/<%= item._id %>"><img src="http://www.mang0g0rilla.tech/<%= item.image.path %>" alt="" class="image-9"></a>
+            <div class="w-clearfix">
+              <h4 class="item-header"><%= item.name %></h4>
+              <div class="item-category"><%= item.category %></div>
               <p class="paragraph-2"><%= item.description %></p>
               <a href="/items/<%= item._id %>" class="link-block w-inline-block">
                 <h5 class="heading-4">Read more</h5>
               </a>
             </div>
-  
+          </div>
           <% } %>
+        </div>
+        <!-- pagination -->
+        <div class="div-block-29" id="pagination"><a href="/items/page/1">1</a></div>
       </div>
-      <div class="div-block-29" id="pagination"><a href="/items/page/1">1</a></div>
     </div>
+  <div>
   </div>
   <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="./../../../js/webflow.js" type="text/javascript"></script>

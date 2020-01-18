@@ -27,38 +27,44 @@
   <% include partials/navbar %>
   <% include partials/searchBar %>
 
-  <div class="content-section">
+
+
+<!-- Item info -->
+  <div class="item-info">
     <div class="w-container">
       <div class="div-block-8">
         <div class="text-block-6"><%= item.name %></div>
-        <div class="text-block-7">
-          <!-- If available -->
-          <% if(item.available) { %>
-            This item is <strong>available</strong>
-          <% } else { %>
-            This item is <strong>not available</strong>
-          <% } %>
-        </div>
       </div>
       <div class="w-row">
         <div class="column w-col w-col-6"><img src="../../../<%= item.image.path %>" alt="" class="good-img"></div>
-        <div class="column-2 w-col w-col-6">
-          <div class="card another">
+        <div class="column-2 w-col w-col-6"><canvas id="myChart"></canvas></div>
+      </div>
+      <h2 class="item-section-heading">Item info</h2>
+      <div class="card another">
+        <div class="w-row">
+          <div class="w-col w-col-6">
             <div class="text-block-4">This is <% if(!item.disposable) { %> <strong>not</strong> <% } %> a disposable item!</div>
-            <div class="text-block-2"><strong>Items available: </strong><%= item.quantityAvailable %></div>
-            <div class="text-block-3"><strong>Times taken: </strong><%= item.statistics.takenThisMonth %></div>
-            <div><strong>Location: </strong><%= item.location %></div>
-            <div><strong>Category: </strong><%= item.category %></div>
-            <div><strong>Description:</strong> <%= item.description %></div>
+            <div class="item-info-line"><strong>Availabe:</strong> <%= item.available %> </div>
+            <div class="item-info-line"><strong>Items available: </strong><%= item.quantityAvailable %></div>
+            <div class="item-info-line"><strong>Was taken this month: </strong><%= item.statistics.takenThisMonth %></div>
+            <div class="item-info-line"><strong>Category: </strong><%= item.category %></div>
+            <div class="item-info-line"><strong>Location: </strong><%= item.location %></div>
           </div>
+          <div class="column-9 w-clearfix w-col w-col-6"><canvas class="image-15" id="QRCode"></canvas></div>
         </div>
+        <h4 class="heading-10">Description:</h4>
+        <div><%= item.description %><br>‍</div>
       </div>
     </div>
   </div>
+
+  <!-- Add to the cart -->
   <% if(item.disposable) { %>
-  <div class="add-to-cart">
+    <div class="w-container">
+      <h2 class="item-section-heading">Add to the cart</h2>
+    </div>
+    <div class="add-to-cart">
       <div class="card w-container">
-        <h3 class="heading-7">Add to the cart</h3>
         <div>
           <div class="w-form">
             <form id="email-form-2" action="/itemManager/addToCart/<%= item._id %>" method="post" class="form-4">
@@ -73,42 +79,44 @@
       </div>
     </div>
   <% } %>
-  <div class="content-section">
-    <div class="w-container">
-      <div class="w-row">
-        <div class="w-col w-col-6"><canvas id="myChart"></canvas></div>
-        <div class="column-3 w-col w-col-6">
-          <div class="div-block-6 card"><canvas id="QRCode"></canvas></div>
-        </div>
-      </div>
-    </div>
-  </div>
+
+
+  <!-- Elements -->
   <% if(item.storage.length > 0) { %>
-    <div class="content-section">
-      <div class="card pieces w-container">
-          <% for(let i = 0; i < item.storage.length; i++) { %>
-        <a href="/items/<%= item._id %>/inventory/<%= item.storage[i]._id %>" class="piece-card w-inline-block">
-          <div class="piece-card">
-            <div class="piece-header" <% if(!item.storage[i].available){ %> style="background-color: #fc6f03;" <% } %>><img src="./../../<%= item.image.path %>" alt="" class="image-7">
-              <div>
-                <div class="piece-txt"><%= item.name %></div>
-                <div class="div-block-7"></div>
-                <div class="piece-txt"><%= item.storage[i].shortID%></div>
-              </div>
+  <div class="item-info">
+    <div class="w-container">
+      <h2 class="item-section-heading">Elements</h2>
+    </div>
+    <div class="card pieces w-container">
+      <% for(let i = 0; i < item.storage.length; i++) { %>
+      <a href="/items/<%= item._id %>/inventory/<%= item.storage[i]._id %>" class="piece-card w-inline-block">
+        <div class="piece-card">
+          <div class="piece-header" <% if(!item.storage[i].available){ %> style="background-color: #fc6f03;" <% } %>><img src="./../../<%= item.image.path %>" alt="" class="image-7">
+
+            <div>
+              <div class="piece-txt"><%= item.name %></div>
+              <div class="div-block-7"></div>
+              <div class="piece-txt"><%= item.storage[i].shortID%></div>
             </div>
           </div>
-        </a>
-          <% } %>
-      </div>
-    <% } %>
+        </div>
+      </a>
+      <% } %>
+    </div>
   </div>
-  <% if(user.permissions.canModifyItems){ %>
-  <form class="card w-container" method="post" action="<%= item._id%>/inventory/new">
-    <% if(!item.disposable){ %><button class="button-positive">Create new piece</button> <% } %>
-    <a class="button-positive" href="<%=item._id%>/edit">Edit item information</a>
-  </form>
   <% } %>
 
+  <!-- Buttons -->
+  <% if(user.permissions.canModifyItems){ %>
+    <form class="card w-container" method="post" action="<%= item._id%>/inventory/new">
+      <% if(!item.disposable){ %><button class="button-positive">Create new piece</button> <% } %>
+      <a class="button-positive" href="<%=item._id%>/edit">Edit item information</a>
+    </form>
+  <% } %>
+
+
+
+  <!-- Comments -->
   <div class="comments-section">
       <div class="card w-container">
         <% if(item.disposable) { %>

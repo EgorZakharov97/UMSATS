@@ -46,6 +46,7 @@ router.post("/addOneToCart/:id", isLoggedIn, function(req, res){
                                 record.user.id = user._id;
                                 record.user.username = user.username;
                                 record.user.email = user.email;
+                                record.user.picture = user.picture;
                                 // item
                                 record.item = piece.item;
                                 record.piece = piece;

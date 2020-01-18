@@ -25,64 +25,64 @@
   <% include partials/navbar %>
   <% include partials/searchBar %>
 
-  <div class="content-section">
-      <div class="w-container">
-        <div class="div-block-8">
-          <div class="text-block-6"><%= piece.item.name %>: <%=piece.shortID %></div>
-          <div class="text-block-7">
-            <!-- If available -->
-            <% if(piece.available) { %>
-              This thing is <strong>available</strong>
-            <% } else { %>
-              This thing is <strong>not available</strong>
-            <% } %>
-          </div>
-        </div>
+    <!-- Item info -->
+  <div class="item-info">
+    <div class="w-container">
+      <div class="div-block-8">
+        <div class="text-block-6"><%= piece.item.name %>: <%=piece.shortID %></div>
+      </div>
+      <div class="w-row">
+        <div class="column w-col w-col-6"><a href="/items/<%= piece.item._id %>"><img src="<%=piece.item.image.path %>" alt="" class="good-img"></a></div>
+        <div class="column-2 w-col w-col-6"><canvas id="myChart"></canvas></div>
+      </div>
+      <h2 class="item-section-heading">Item info</h2>
+      <div class="card another">
         <div class="w-row">
-          <div class="column w-col w-col-6"><a href="/items/<%=piece.item._id%>"><img src="../../../<%= piece.item.image.path %>" alt="" class="good-img"></a></div>
-          <div class="column-2 w-col w-col-6">
-            <div class="card another">
-              <div class="text-block-4">This is <% if(!piece.item.disposable) { %> <strong>not</strong> <% } %> a disposable item!</div>
-              <div class="text-block-2"><strong>Items available: </strong><%= piece.item.quantityAvailable %></div>
-              <div class="text-block-3"><strong>Times taken: </strong><%= piece.item.statistics.takenThisMonth %></div>
-              <div><strong>Location: </strong><%= piece.item.location %></div>
-              <div><strong>Category: </strong><%= piece.item.category %></div>
-              <div><strong>Description:</strong> <%= piece.item.description %></div>
-              <div><strong>Piece ID:</strong><p id='shortID'><%= piece.shortID %></p></div>
-              <div id="itemID" style="display:none;"><%= piece.item._id %></div>
-            </div>
-            <div class="card another">
-                <canvas id="QRCode"></canvas>
-            </div>
+          <div class="w-col w-col-6">
+            <div class="text-block-4">This is <strong>not</strong> a disposable Element!</div>
+            <div class="item-info-line"><strong>Availabe:</strong> <%= piece.available %> </div>
+            <div class="item-info-line"><strong>Category: </strong><%= piece.item.category %></div>
+            <div class="item-info-line"><strong>Location: </strong><%= piece.item.location %></div>
+            <div class="item-info-line"><strong>ShortID: </strong><%= piece.shortID %></div>
+            <div id="itemID" style="display:none;"><%= piece.item._id %></div>
+            <div id="shortID" style="display:none;"><%= piece.shortID %></div>
           </div>
+          <div class="column-9 w-clearfix w-col w-col-6"><canvas class="image-15" id="QRCode"></canvas></div>
         </div>
+        <h4 class="heading-10">Description:</h4>
+        <div><%= piece.item.description %><br>‍</div>
       </div>
     </div>
+  </div>
 
+  <!-- Add to the cart -->
     <% if(piece.available){ %>
+    <div class="w-container">
+      <h2 class="item-section-heading">Add to the cart</h2>
+    </div>
     <div class="add-to-cart">
         <div class="card w-container">
-          <h3 class="heading-7">Add to the cart</h3>
           <div>
             <div class="w-form">
               <form id="email-form-2" action="/itemManager/addOneToCart/<%= piece._id %>" method="post" class="form-4">
                 <div class="div-block-25">
                 </div>
-                <div class="div-block-26"><button class="button-7 w-button">Add to cart</button></div>
+                <div class="div-block-26"><button class="button-7 w-button">Add to the cart</button></div>
               </form>
             </div>
           </div>
         </div>
       </div>
       <% } %>
-
   <div>
+
+    <!-- Records -->
     <div class="w-container">
       <% if(piece.records.length > 0) { %>
-      <h3>This item was taken by:</h3>
+      <h2 class="item-section-heading">This item was taken by:</h2>
         <div class="taken-by card">
           <% for(let i = piece.records.length-1; i >= 0; i--){ %>
-            <div class="record"><a href="#" class="w-inline-block"><img src="images/user.png" width="62" alt=""></a>
+            <div class="record"><a href="#" class="w-inline-block"><img style="border-radius: 50%;" src="<%= piece.records[i].user.picture %>" width="62" alt=""></a>
               <div class="div-block-11">
                 <div class="record-text"><a href="/user/<%= piece.records[i].user.id %>"><%= piece.records[i].user.username %></a></div>
                 <div class="record-text"><%= piece.records[i].user.email %></div>
