@@ -46,7 +46,6 @@ router.post("/addOneToCart/:id", isLoggedIn, function(req, res){
                                 record.user.id = user._id;
                                 record.user.username = user.username;
                                 record.user.email = user.email;
-                                record.user.picture = user.picture;
                                 // item
                                 record.item = piece.item;
                                 record.piece = piece;
@@ -160,21 +159,26 @@ router.post('/take', isLoggedIn, async function(req, res){
     }
 
     let takeDisposable = async function(user, record){
-         let item = record.item;
-         record.dateTaken = new Date();
-         record.save();
+        let item = record.item;
 
-         item.quantityAvailable -= record.itemInfo.quantityTaken;
-         item.statistics.takenThisMonth++;
-         item.records.push(record);
+        if(item.quantityAvailable < record.itemInfo.quantityTaken){
+            return
+        }
 
-         if(item.quantityAvailable <= 0){
-             item.available = false;
-         }
-         item.save();
+        record.dateTaken = new Date();
+        record.save();
 
-         user.records.push(record);
-         user.numTaken++;
+        item.quantityAvailable -= record.itemInfo.quantityTaken;
+        item.statistics.takenThisMonth++;
+        item.records.push(record);
+
+        if(item.quantityAvailable <= 0){
+            item.available = false;
+        }
+        item.save();
+
+        user.records.push(record);
+        user.numTaken++;
     };
 
     let takeReusable = async function(record, dateReturn, emailItem){
@@ -235,6 +239,7 @@ router.post('/take', isLoggedIn, async function(req, res){
             await takeReusable(record, dateReturn, emailData.items[i]);
         }
     }
+
     user.cart = [];
     user.save();
     emailData.user.username = user.username

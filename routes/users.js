@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
+const Record = require("../models/record")
 const myFunc = require('../exports/exports'),
     isLoggedIn = myFunc.isLoggedIn;
 
@@ -12,12 +13,13 @@ const myFunc = require('../exports/exports'),
 router.get("/user", isLoggedIn, function(req, res){
     User.findById(req.user._id)
         .populate('cart')
-        .populate('records')
-        .exec(function(err, user){
+        .exec(async function(err, user){
             if(err){
                 console.log(err)
             } else {
-                res.render('me', {user: user})
+                let onHand = await Record.find({returned: false, "user.id": user._id}).catch(e =>{console.log(e)})
+                let returned = await Record.find({returned: true, "user.id": user._id}).catch(e =>{console.log(e)})
+                res.render('me', {user: user, onHand: onHand, returned: returned})
             }
         })
 })
@@ -48,11 +50,13 @@ router.get(
             if(err){
                 console.log(err)
             } else {
-                User.findById(req.params.id).populate('records').exec(function(err, foundUser){
+                User.findById(req.params.id, async function(err, foundUser){
                     if(err){
                         console.log(err)
                     } else {
-                        res.render('user', {user: currUser, display: foundUser})
+                        let onHand = await Record.find({returned: false, "user.id": foundUser._id}).catch(e =>{console.log(e)})
+                        let returned = await Record.find({returned: true, "user.id": foundUser._id}).catch(e =>{console.log(e)})
+                        res.render('user', {user: currUser, display: foundUser, onHand: onHand, returned: returned})
                     }
                 })
             }

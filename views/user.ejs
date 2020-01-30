@@ -44,7 +44,7 @@
                 <h3>Permissions</h3>
 
 
-                <form class="form-6" action="/user/permissions/<%=user._id%>" method="post" id="wf-form-permissions-form" name="wf-form-permissions-form" data-name="permissions form">
+                <form class="form-6" action="/user/permissions/<%=display._id%>" method="post" id="wf-form-permissions-form" name="wf-form-permissions-form" data-name="permissions form">
                   
                   <label class="w-checkbox">
                     <input type="checkbox" <%if(display.permissions.canMakePosts){%>checked<%}%> id="CanMakePosts" name="canMakePosts" class="w-checkbox-input">
@@ -78,10 +78,9 @@
       <h2 class="item-section-heading">Items on hand</h2>
     </div>
     <div class="card card-user w-container">
-      <% if(display.records.length > 0) { %>
-        <% for(let i = display.records.length-1; i >= 0; i--) { %>
-          <% let record = display.records[i] %>
-          <% if((!record.itemInfo.disposable) && (!record.returned)) { %>
+      <% if(onHand > 0) { %>
+        <% for(let i = onHand.length-1; i >= 0; i--) { %>
+          <% let record = onHand[i] %>
           <a href="/items/<%=record.item%>/inventory/<%= record.piece %>" class="piece-card w-inline-block">
             <div class="piece-card">
               <div class="piece-header"><img src="./../../<%= record.itemInfo.image %>" alt="" class="image-7">
@@ -94,8 +93,9 @@
               </div>
             </div>
           </a>
-          <% } else { break } %>
         <% } %>
+      <% } else { %>
+        <p>This user has no records to display</p>
       <% } %>
     </div>
   </div>
@@ -107,9 +107,9 @@
         <h2 class="item-section-heading">Items recently taken</h2>
       </div>
       <div class="card card-user w-container">
-          <% for(let i = 0; i < display.records.length; i++) { %>
-            <% let record = display.records[i] %>
-            <% if(record.returned) { %>
+        <% if(returned.length > 0) { %>
+          <% for(let i = 0; i < returned.length; i++) { %>
+            <% let record = returned[i] %>
               <a href="/items/<%=record.item%>/inventory/<%= record.piece %>" class="piece-card w-inline-block">
                 <div class="piece-card">
                   <div class="piece-header"><img src="./../../<%= record.itemInfo.image %>" alt="" class="image-7">
@@ -122,8 +122,10 @@
                   </div>
                 </div>
               </a>
-            <% }} %>
-        
+            <% } %>
+          <% } else { %>
+            <p>This user has no records to display</p>
+          <% } %>
       </div>
     </div>
 

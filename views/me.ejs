@@ -77,10 +77,9 @@
       <h2 class="item-section-heading">Items on hand</h2>
     </div>
     <div class="card card-user w-container">
-      <% if(user.records.length > 0) { %>
-        <% for(let i = user.records.length-1; i >= 0; i--) { %>
-          <% let record = user.records[i] %>
-          <% if((!record.itemInfo.disposable) && (!record.returned)) { %>
+      <% if(onHand.length > 0) { %>
+        <% for(let i = onHand.length-1; i >= 0; i--) { %>
+          <% let record = onHand[i] %>
           <a href="/items/<%=record.item%>/inventory/<%= record.piece %>" class="piece-card w-inline-block">
             <div class="piece-card">
               <div class="piece-header"><img src="./../../<%= record.itemInfo.image %>" alt="" class="image-7">
@@ -93,7 +92,6 @@
               </div>
             </div>
           </a>
-          <% } else { break } %>
         <% } %>
       <% } else { %>
         <p>You have nothing to return</p>
@@ -107,9 +105,9 @@
       <h2 class="item-section-heading">Items recently taken</h2>
     </div>
     <div class="card card-user w-container">
-        <% for(let i = 0; i < user.records.length; i++) { %>
-          <% let record = user.records[i] %>
-          <% if(record.returned) { %>
+      <% if(returned.length > 0) { %>
+        <% for(let i = 0; i < returned.length-1; i++) { %>
+          <% let record = returned[i] %>
             <a href="/items/<%=record.item%>/inventory/<%= record.piece %>" class="piece-card w-inline-block">
               <div class="piece-card">
                 <div class="piece-header"><img src="./../../<%= record.itemInfo.image %>" alt="" class="image-7">
@@ -122,8 +120,10 @@
                 </div>
               </div>
             </a>
-          <% }} %>
-      
+          <% } %>
+      <% } else { %>
+        <p>You have no records to display</p>
+      <% } %>
     </div>
   </div>
   
