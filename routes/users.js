@@ -26,7 +26,7 @@ router.get("/user", isLoggedIn, function(req, res){
 
 // display all users
 router.get('/all-users/', isLoggedIn, function(req, res){
-    User.findById(req.user._id, function(err, user){
+    User.findById(req.user._id).populate('cart').exec(function(err, user){
         if(err){
             console.log(err)
         } else {
